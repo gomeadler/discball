@@ -36,6 +36,15 @@ teams = [("Team A", RED), ("Team B", BLUE), ("Team C", GREEN), ("Team D", YELLOW
          ("Team E", MAGENTA), ("Team F", ORANGE), ("Team G", GRAY), ("Team H", BROWN)]
 
 
+def get_color(team_name: str) -> str:
+    color = WHITE
+    for t in teams:
+        if t[0] == team_name:
+            color = t[1]
+            return color
+    if color == WHITE:
+        raise ValueError("Team not found")
+
 def random_gaussian_number(mean, std_dev, min_value, max_value) -> int:
     return int(clip(round(random.normal(mean, std_dev)), min_value, max_value))
 
@@ -125,25 +134,9 @@ def increase_stat_by(table: pandas.DataFrame, player: int, stat: str, amount: in
     table.loc[player, stat] += amount
 
 
-league, players, stats, = initiate_league_and_players()
-
-
-def check():
-    increase_stat_by(stats, 7, "drops_made", 6)
-    p = create_match_team("Team B", players)
-    for i in range(6, 11):
-        p.loc[i-6, "distance_covered"] += i
-    print(p)
-    d = {"left score": 1, "right score": 10}
-    update_league_table("Team B", "Team D", d, league)
-    print(league)
-
-
-def update_stats_table_from_match_table(source_table: pandas.DataFrame, receiving_table: pandas.DataFrame):
-    for key in source_table.keys()[2:]:
-        if key in receiving_table.keys():
-            for i in range(NUM_OF_PLAYERS_IN_TEAM):
-                receiving_table.loc[source_table.loc[i, "ID"], key] += source_table.loc[i, key]
+def update_stats_table_from_another(source_table: pandas.DataFrame, receiving_table: pandas.DataFrame):
+    source_table["ID"] = 0
+    return receiving_table + source_table
 
 
 def update_ratio(team_name: str, table: pandas.DataFrame):
@@ -196,3 +189,6 @@ def show_league(table: pandas.DataFrame):
 def find_top_team(table: pandas.DataFrame) -> int:
     sorted_ids = table.sort_values(by=["points"], ascending=False).loc[:, "ID"].to_list()
     return sorted_ids[0]
+
+
+players = create_players()

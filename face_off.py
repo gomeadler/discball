@@ -34,17 +34,17 @@ def determine_retreat(target_balance: int, shot_quality: float) -> int:
 
 
 def take_down(target_player: Player, shooter: Player, target_is_left: bool,
-              target_table: DataFrame, shooter_table: DataFrame):
+              game_table):
 
-    increase_stat_by(target_table, target_player.attributes["Shirt number"] - 1, "balance_losses", 1)
-    increase_stat_by(shooter_table, shooter.attributes["Shirt number"] - 1, "successful_takedowns", 1)
+    increase_stat_by(game_table, target_player.id, "balance_losses", 1)
+    increase_stat_by(game_table, shooter.id, "successful_takedowns", 1)
 
     if target_player.has_disc:
         # meaning it was a carrier takedown and a drop
 
         target_player.reset_position(target_is_left, True)
-        increase_stat_by(target_table, target_player.attributes["Shirt number"] - 1, "drops_made", 1)
-        increase_stat_by(shooter_table, shooter.attributes["Shirt number"] - 1, "carrier_takedowns", 1)
+        increase_stat_by(game_table, target_player.id, "drops_made", 1)
+        increase_stat_by(game_table, shooter.id, "carrier_takedowns", 1)
         return True
 
     else:
@@ -53,17 +53,7 @@ def take_down(target_player: Player, shooter: Player, target_is_left: bool,
 
 
 def retreat(target_player: Player, shooter: Player, left_team_players_list: list, shot_quality: float,
-            left_table: DataFrame, right_table: DataFrame) -> bool:
-    """ Makes a player who have taken a hit retreat backwards.
-
-    :param target_player:
-    :param shooter:
-    :param left_team_players_list:
-    :param shot_quality:
-    :param left_table:
-    :param right_table:
-    :return:
-    """
+            game_table: DataFrame) -> bool:
 
     blocks = determine_retreat(target_player.attributes["stability"], shot_quality)
     target_is_left = bool(target_player in left_team_players_list)
@@ -73,16 +63,12 @@ def retreat(target_player: Player, shooter: Player, left_team_players_list: list
     elif not target_is_left and (21 - target_player.column) <= blocks:
         there_is_a_takedown = True
 
-    if target_is_left:
-        target_table = left_table
-        shooter_table = right_table
-    else:
+    if not target_is_left:
+
         blocks *= -1
-        target_table = right_table
-        shooter_table = left_table
 
     if there_is_a_takedown:
-        result = take_down(target_player, shooter, target_is_left, target_table, shooter_table)
+        result = take_down(target_player, shooter, target_is_left, game_table)
         return result
 
     else:
@@ -91,7 +77,7 @@ def retreat(target_player: Player, shooter: Player, left_team_players_list: list
 
 
 def face_off(shooter: Player, running_team: list, left_team_players_list: list,
-             left_table: DataFrame, right_table: DataFrame, silent: bool) -> (bool, str):
+             game_table: DataFrame, silent: bool) -> (bool, str):
     # choose a target
     target_player = choose_target(shooter, running_team)
     if target_player is None:
@@ -101,23 +87,16 @@ def face_off(shooter: Player, running_team: list, left_team_players_list: list,
     shot_quality = randint(1, shooter.attributes["shooting"]) // calculate_distance(shooter, target_player)
     evasion_attempt = randint(1, target_player.attributes["agility"])
 
-    # check on which team the shooter is
-    if shooter in left_team_players_list:
-        shooter_table, target_table = left_table, right_table
-    else:
-        shooter_table, target_table = right_table, left_table
-
     # evade or try to balance
     if shot_quality > evasion_attempt:
-        increase_stat_by(shooter_table, shooter.attributes["Shirt number"] - 1, "successful_shots", 1)
-        increase_stat_by(target_table, target_player.attributes["Shirt number"] - 1, "hits_taken", 1)
+        increase_stat_by(game_table, shooter.id, "successful_shots", 1)
+        increase_stat_by(game_table, target_player.id, "hits_taken", 1)
         if not silent:
             print(f"{shooter.format_name()} hit {target_player.format_name()}")
             sleep(1)
 
-        there_was_a_drop = retreat(target_player, shooter, left_team_players_list, shot_quality,
-                                   left_table, right_table)
+        there_was_a_drop = retreat(target_player, shooter, left_team_players_list, shot_quality, game_table)
         return there_was_a_drop
     else:
-        increase_stat_by(target_table, target_player.attributes["Shirt number"] - 1, "evasions", 1)
+        increase_stat_by(game_table, target_player.id, "evasions", 1)
         return False

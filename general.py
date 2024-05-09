@@ -1,7 +1,7 @@
 from random import choices
 from math import dist
 from data import players, teams, create_match_team, increase_stat_by, COLOR_RESET, CYAN, PURPLE, WHITE, \
-    NUM_OF_PLAYERS_IN_TEAM, find_top_team
+    NUM_OF_PLAYERS_IN_TEAM, find_top_team, create_empty_stats_dict, get_color
 from pandas import DataFrame
 from player_class import Player
 
@@ -29,17 +29,9 @@ def get_positions(team: list) -> list:
     return positions
 
 
-def get_color(team_name: str) -> str:
-    color = WHITE
-    for t in teams:
-        if t[0] == team_name:
-            color = t[1]
-            return color
-    if color == WHITE:
-        raise ValueError("Team not found")
-
-
 def create_field(left_team: list, right_team: list, match_state: dict, carrier_position: tuple):
+    # TODO: check if a blue team plays and change dot color of the carrier accordingly
+
     left_positions = get_positions(left_team)
     right_positions = get_positions(right_team)
     field_str = ""
@@ -97,13 +89,12 @@ def calculate_distance(player1: Player, player2: Player) -> float:
         return result
 
 
-def creating_competition(team1: list, team2: list, left_table: DataFrame, right_table: DataFrame):
+def creating_competition(team1: list, team2: list, game_table: DataFrame):
     eligible_players = [player for player in team1 + team2 if player.column not in [0, 21]]
     creating_attributes = [player.attributes["creating"] for player in eligible_players]
     carrier = choose_player_by_probabilities(eligible_players, creating_attributes)
     carrier.has_disc = True
-    increase_stat_by(left_table if carrier.column < 11
-                     else right_table, carrier.attributes["Shirt number"] - 1, "creations", 1)
+    increase_stat_by(game_table, carrier.id, "creations", 1)
     if carrier in team1:
         return carrier, team1
     else:
@@ -118,6 +109,7 @@ def reset_all_positions(team: list, team_is_left: bool):
 def prepare_match(left_team_name, right_team_name):
     left_team = create_match_team(left_team_name, players)
     right_team = create_match_team(right_team_name, players)
+    game_stats_table = create_empty_stats_dict()
     combined_list = []
     for team in (left_team, right_team):
         id_list = list(team["ID"])
@@ -137,7 +129,7 @@ def prepare_match(left_team_name, right_team_name):
         "right color": get_color(right_team_name)
     }
     print(f"{left_team_name} Vs {right_team_name}")
-    return left_team, combined_list[0], right_team, combined_list[1], match_state_dict
+    return game_stats_table, combined_list[0], combined_list[1], match_state_dict
 
 
 def find_top_players(stats_table: DataFrame):
@@ -146,7 +138,7 @@ def find_top_players(stats_table: DataFrame):
     top_players_list = []
     arranged_stats = []
     for stat in keys_list[first_index:]:
-        sorted_table = stats_table.sort_values(by=[stat], ascending=False).head(1)
+        sorted_table = stats_table.sort_values(by=[stat], ascending=False)
         top_index = int(sorted_table["ID"].iloc[0])
         if top_index in top_players_list:
             arranged_stats[top_players_list.index(top_index)].append(stat)

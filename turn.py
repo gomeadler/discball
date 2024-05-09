@@ -25,7 +25,7 @@ def declare_state(list_of_left_team_players, list_of_right_team_players, match_s
     sleep(0.5)
 
 
-def advance(player: Player) -> int:
+def determine_blocks(player: Player) -> int:
     """randomizes the number of blocks a certain player would advance.
     """
     if player.delay:
@@ -42,58 +42,46 @@ def advance(player: Player) -> int:
 
 
 def advance_all(left_team_players_list: list, right_team_players_list: list,
-                left_table: DataFrame, right_table: DataFrame):
-    threshold = 10
-    table = left_table
-    for player in left_team_players_list:
-        if player.column == threshold:
-            increase_stat_by(table, player.attributes["Shirt number"] - 1, "turns_in_touchdown_strip", 1)
-            continue
-        blocks = advance(player)
-        if player.column + blocks > threshold:
-            blocks = abs(player.column - threshold)
-        player.column += blocks
-        increase_stat_by(table, player.attributes["Shirt number"] - 1, "distance_covered", blocks)
-        if player.has_disc:
-            increase_stat_by(table, player.attributes["Shirt number"] - 1, "distance_carried", blocks)
-    threshold = 11
-    table = right_table
-    for player in right_team_players_list:
-        if player.column == threshold:
-            increase_stat_by(table, player.attributes["Shirt number"] - 1, "turns_in_touchdown_strip", 1)
-            continue
-        blocks = advance(player)
-        if player.column - blocks < threshold:
-            blocks = abs(player.column - threshold)
-        player.column -= blocks
-        increase_stat_by(table, player.attributes["Shirt number"] - 1, "distance_covered", blocks)
-        if player.has_disc:
-            increase_stat_by(table, player.attributes["Shirt number"] - 1, "distance_carried", blocks)
+                game_table: DataFrame):
+    for i, team in enumerate([left_team_players_list, right_team_players_list]):
+        threshold = 11 if bool(i) else 10
+        direction = -1 if bool(i) else 1
+
+        for player in team:
+            if player.column == threshold:
+                increase_stat_by(game_table, player.id, "turns_in_touchdown_strip", 1)
+            else:
+                distance = abs(player.column - threshold)
+                blocks = direction * determine_blocks(player)
+                if distance < abs(blocks):
+                    blocks = distance * direction
+                player.column += blocks
+                increase_stat_by(game_table, player.id, "distance_covered", abs(blocks))
+                if player.has_disc:
+                    increase_stat_by(game_table, player.id, "distance_carried", abs(blocks))
 
 
 def check_touchdown(carrier: Player, match_state: dict, left_team_players_list: list,
-                    left_table: DataFrame, right_table: DataFrame) -> bool:
+                    game_table: DataFrame) -> bool:
     # determine variables
     if carrier in left_team_players_list:
-        table = left_table
         threshold = 10
         score = "left score"
     else:
-        table = right_table
         threshold = 11
         score = "right score"
 
     # check if there was a touchdown
     if carrier.column == threshold:
         match_state[score] += 1
-        increase_stat_by(table, carrier.attributes["Shirt number"] - 1, "touchdowns", 1)
+        increase_stat_by(game_table, carrier.id, "touchdowns", 1)
         return True
     else:
         return False
 
 
 def turn(match_state: dict, carrier: Player, running_team: list, left_team_players_list: list,
-         right_team_players_list: list, left_table: DataFrame, right_table: DataFrame, silent: bool) -> str:
+         right_team_players_list: list, game_table: DataFrame, silent: bool) -> str:
     match_state["turn"] = 0
     shooting_team = left_team_players_list if running_team == right_team_players_list else right_team_players_list
 
@@ -104,7 +92,7 @@ def turn(match_state: dict, carrier: Player, running_team: list, left_team_playe
         if not silent:
             declare_state(left_team_players_list, right_team_players_list, match_state, carrier)
 
-        advance_all(left_team_players_list, right_team_players_list, left_table, right_table)
+        advance_all(left_team_players_list, right_team_players_list, game_table)
 
         if not silent:
             declare_state(left_team_players_list, right_team_players_list, match_state, carrier)
@@ -112,7 +100,7 @@ def turn(match_state: dict, carrier: Player, running_team: list, left_team_playe
         there_was_a_drop_at_some_point = False
         taker = None
         for player in shooting_team:
-            there_was_a_drop = face_off(player, running_team, left_team_players_list, left_table, right_table, silent)
+            there_was_a_drop = face_off(player, running_team, left_team_players_list, game_table, silent)
             if there_was_a_drop:
                 there_was_a_drop_at_some_point = True
                 taker = player.format_name()
@@ -124,7 +112,7 @@ def turn(match_state: dict, carrier: Player, running_team: list, left_team_playe
                 sleep(3)
             return "Drop"
 
-        if check_touchdown(carrier, match_state, left_team_players_list, left_table, right_table):
+        if check_touchdown(carrier, match_state, left_team_players_list, game_table):
             if not silent:
                 declare_state(left_team_players_list, right_team_players_list, match_state, carrier)
                 print(f"{carrier.format_name()} scored a touchdown!")

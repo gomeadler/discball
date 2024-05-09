@@ -1,4 +1,4 @@
-from data import players, teams, COLOR_RESET, PURPLE
+from data import players, COLOR_RESET, PURPLE, get_color
 from pandas import DataFrame
 
 
@@ -11,6 +11,7 @@ class Player:
         :param player_id: an integer representing the player's ID in the players Dataframe.
         """
         self.attributes = players.loc[player_id]
+        self.id = player_id
         self.has_disc = False
         self.row = None
         self.column = None
@@ -28,16 +29,17 @@ class Player:
         """
         self.has_disc = False
         self.delay = False
-        temp = (self.attributes["Shirt number"] - 1) * 2
+        self.row = (self.id % 5) * 2
         if is_left:
             self.column = 1
-            self.row = temp
+
             if during_a_set:
                 self.column -= 1
                 self.delay = True
         else:
             self.column = 20
-            self.row = temp + 1
+            self.row += 1
+
             if during_a_set:
                 self.column += 1
                 self.delay = True
@@ -48,11 +50,7 @@ class Player:
 
         :return: string of ANSI escape code (of the Team's color), player's name and ANSI escape code (of a color reset)
         """
-        color = COLOR_RESET
-        team_name = self.attributes["Team"]
-        for team in teams:
-            if team[0] == team_name:
-                color = team[1]
+        color = get_color(self.attributes["Team"])
         return "".join([color, self.attributes["Name"], COLOR_RESET])
 
     def present_player(self, stats_table: DataFrame, top_stat_list: list):
@@ -62,5 +60,5 @@ class Player:
         for player_stat in keys_list[first_index:]:
             if player_stat in top_stat_list:
                 print(PURPLE, end="")
-            print("   ", player_stat, stats_table.loc[self.attributes["ID"], player_stat])
+            print("   ", player_stat, stats_table.loc[self.id, player_stat])
             print(COLOR_RESET, end="")

@@ -1,4 +1,4 @@
-import pandas
+from pandas import DataFrame, read_excel
 from numpy import random, clip
 from names import get_first_name
 
@@ -45,11 +45,12 @@ def get_color(team_name: str) -> str:
     if color == WHITE:
         raise ValueError("Team not found")
 
+
 def random_gaussian_number(mean, std_dev, min_value, max_value) -> int:
     return int(clip(round(random.normal(mean, std_dev)), min_value, max_value))
 
 
-def create_league() -> pandas.DataFrame:
+def create_league() -> DataFrame:
     league_dict = {
         "ID": [i for i in range(len(teams))],
         "Color": [i[1] for i in teams],
@@ -59,13 +60,13 @@ def create_league() -> pandas.DataFrame:
         "ratio": [0 for _ in teams],
         "points": [0 for _ in teams]
     }
-    df = pandas.DataFrame(league_dict)
+    df = DataFrame(league_dict)
     df = df.astype(dtype={"ID": int, "Color": str, 'Name': str, "touchdowns": int,
                           "conceded": int, "ratio": int, "points": int})
     return df
 
 
-def create_empty_stats_dict() -> pandas.DataFrame:
+def create_empty_stats_dict() -> DataFrame:
     stats_dict = {
         "ID": [i for i in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "distance_covered": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
@@ -81,10 +82,10 @@ def create_empty_stats_dict() -> pandas.DataFrame:
         "balance_losses": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "drops_made": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))]
     }
-    return pandas.DataFrame(stats_dict)
+    return DataFrame(stats_dict)
 
 
-def create_match_team(team: str, players_table: pandas.DataFrame) -> pandas.DataFrame:
+def create_match_team(team: str, players_table: DataFrame) -> DataFrame:
     new_table = players_table.query(f"Team == '{team}'")
 
     stats_dict = {
@@ -103,10 +104,11 @@ def create_match_team(team: str, players_table: pandas.DataFrame) -> pandas.Data
         "balance_losses": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
         "drops_made": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
     }
-    return pandas.DataFrame(stats_dict)
+    return DataFrame(stats_dict)
 
 
-def create_players() -> pandas.DataFrame:
+def create_players() -> DataFrame:
+    path = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"
     player_ability_dict = {
         "ID": [i for i in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "Name": [get_first_name("Male") for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
@@ -118,10 +120,16 @@ def create_players() -> pandas.DataFrame:
         "shooting": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "stability": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
     }
-    return pandas.DataFrame(player_ability_dict)
+    players_df = DataFrame(player_ability_dict)
+    players_df.to_excel(path, index=False)
+    return path
 
 
-def clear_table(table_name: pandas.DataFrame):
+def import_players(path):
+    return read_excel(path)
+
+
+def clear_table(table_name: DataFrame):
     table_name.loc[:, :] = 0
 
 
@@ -129,23 +137,23 @@ def initiate_league_and_players():
     return create_league(), create_players(), create_empty_stats_dict()
 
 
-def increase_stat_by(table: pandas.DataFrame, player: int, stat: str, amount: int):
+def increase_stat_by(table: DataFrame, player: int, stat: str, amount: int):
     """gets the key to a player, a stat to increase and the amount to increase it by"""
     table.loc[player, stat] += amount
 
 
-def update_stats_table_from_another(source_table: pandas.DataFrame, receiving_table: pandas.DataFrame):
+def update_stats_table_from_another(source_table: DataFrame, receiving_table: DataFrame):
     source_table["ID"] = 0
     return receiving_table + source_table
 
 
-def update_ratio(team_name: str, table: pandas.DataFrame):
+def update_ratio(team_name: str, table: DataFrame):
     ratio = \
         (table.loc[table["Name"] == team_name, "touchdowns"] * 100 // table.loc[table["Name"] == team_name, "conceded"])
     table.loc[table["Name"] == team_name, "ratio"] = ratio
 
 
-def update_league_table(left_team_name: str, right_team_name: str, match_summary: dict, table: pandas.DataFrame):
+def update_league_table(left_team_name: str, right_team_name: str, match_summary: dict, table: DataFrame):
     left_won = True if match_summary["left score"] > match_summary["right score"] else False
     left_summary = {
         "touchdowns": match_summary["left score"],
@@ -171,7 +179,7 @@ def update_league_table(left_team_name: str, right_team_name: str, match_summary
         update_ratio(team, table)
 
 
-def show_league(table: pandas.DataFrame):
+def show_league(table: DataFrame):
     sorted_table = table.sort_values(by=["points"], ascending=False).loc[:, "Name":]
     sorted_ids = table.sort_values(by=["points"], ascending=False).loc[:, "ID"].to_list()
     sorted_table = sorted_table.to_string(index=False).split("\n")
@@ -186,9 +194,6 @@ def show_league(table: pandas.DataFrame):
     print("\n")
 
 
-def find_top_team(table: pandas.DataFrame) -> int:
+def find_top_team(table: DataFrame) -> int:
     sorted_ids = table.sort_values(by=["points"], ascending=False).loc[:, "ID"].to_list()
     return sorted_ids[0]
-
-
-players = create_players()

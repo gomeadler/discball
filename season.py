@@ -1,5 +1,5 @@
 from game import game
-from data import show_league, teams, create_league, create_empty_stats_dict, update_stats_table_from_another
+from data import show_league, create_league, create_empty_stats_dict, update_stats_table_from_another, teams
 from general import print_top_performers, print_top_team
 from pandas import DataFrame
 from time import sleep
@@ -49,6 +49,8 @@ def match_day(games_list: list, league_table: DataFrame, silent: bool = True) ->
 
 
 def season(list_of_teams: list, print_summary: bool = False, silent: bool = True):
+    # TODO: silent dict to determine what is silent and what isn't
+
     league = create_league()
     season_stats = create_empty_stats_dict()
     game_schedule = make_schedule(list(set([team[0] for team in list_of_teams])))
@@ -62,5 +64,4 @@ def season(list_of_teams: list, print_summary: bool = False, silent: bool = True
         print_top_performers(season_stats)
 
 
-game_schedule = make_schedule(list(set([team[0] for team in teams])))
-match_day(game_schedule[0], create_league(), False)
+season(teams, True, False)

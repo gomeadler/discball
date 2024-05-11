@@ -37,6 +37,14 @@ teams = [("Team A", RED), ("Team B", BLUE), ("Team C", GREEN), ("Team D", YELLOW
          ("Team E", MAGENTA), ("Team F", ORANGE), ("Team G", GRAY), ("Team H", BROWN)]
 
 
+def find_team_by_name(team_name: str) -> int:
+    for index, team in enumerate(teams):
+        if team[0] == team_name:
+            return index
+
+    raise ValueError("Team not found")
+
+
 def get_color(team_name: str) -> str:
     color = WHITE
     for t in teams:

@@ -47,7 +47,6 @@ def match_day(games_list: list, league_table: DataFrame, declare: dict) -> DataF
 
 
 def season(list_of_teams: list, declare: dict):
-    # TODO: silent dict to determine what is silent and what isn't
 
     league = create_league()
     season_stats = create_empty_stats_dict()

@@ -18,8 +18,12 @@ def phase(match_state: dict, left_team_players_list: list, right_team_players_li
             break
 
 
-def game(left_team_name: str, right_team_name: str, league_table: DataFrame, silent: bool) -> DataFrame:
+def game(left_team_name: str, right_team_name: str, league_table: DataFrame, declare: dict) -> DataFrame:
+
     game_table, left_team_players, right_team_players, state_dict = prepare_match(left_team_name, right_team_name)
+
+    silent = not(declare["gameplay"])
+
     while state_dict["left score"] < POINTS_FOR_WIN and state_dict["right score"] < POINTS_FOR_WIN:
         state_dict["set"] += 1
         for i, team in enumerate([left_team_players, right_team_players]):
@@ -30,7 +34,7 @@ def game(left_team_name: str, right_team_name: str, league_table: DataFrame, sil
           f"the final score was {state_dict['left score']} : {state_dict['right score']}")
 
     update_league_table(left_team_name, right_team_name, state_dict, league_table)
-    if not silent:
+    if declare["game_summary"]:
         print_top_performers(game_table)
 
     return game_table

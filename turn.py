@@ -28,6 +28,8 @@ def declare_state(list_of_left_team_players, list_of_right_team_players, match_s
 def determine_blocks(player: Player) -> int:
     """randomizes the number of blocks a certain player would advance.
     """
+    # TODO: special qualities such as sprinter and slow starter
+
     if player.delay:
         player.delay = False
         return 0

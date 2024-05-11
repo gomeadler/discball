@@ -4,6 +4,7 @@ from names import get_first_name
 
 NUM_OF_PLAYERS_IN_TEAM = 5
 POINTS_FOR_WIN = 10
+PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"
 
 
 COLOR_RESET = '\033[0m'
@@ -107,8 +108,7 @@ def create_match_team(team: str, players_table: DataFrame) -> DataFrame:
     return DataFrame(stats_dict)
 
 
-def create_players() -> DataFrame:
-    path = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"
+def create_players(path) -> DataFrame:
     player_ability_dict = {
         "ID": [i for i in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "Name": [get_first_name("Male") for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
@@ -122,11 +122,11 @@ def create_players() -> DataFrame:
     }
     players_df = DataFrame(player_ability_dict)
     players_df.to_excel(path, index=False)
-    return path
+    return players_df
 
 
-def import_players(path):
-    return read_excel(path)
+def import_players():
+    return read_excel(PATH)
 
 
 def clear_table(table_name: DataFrame):
@@ -134,7 +134,7 @@ def clear_table(table_name: DataFrame):
 
 
 def initiate_league_and_players():
-    return create_league(), create_players(), create_empty_stats_dict()
+    return create_league(), create_players(PATH), create_empty_stats_dict()
 
 
 def increase_stat_by(table: DataFrame, player: int, stat: str, amount: int):

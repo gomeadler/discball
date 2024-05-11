@@ -1,4 +1,4 @@
-from data import players, COLOR_RESET, PURPLE, get_color
+from data import import_players, COLOR_RESET, PURPLE, get_color
 from pandas import DataFrame
 
 
@@ -10,6 +10,7 @@ class Player:
 
         :param player_id: an integer representing the player's ID in the players Dataframe.
         """
+        players = import_players()
         self.attributes = players.loc[player_id]
         self.id = player_id
         self.has_disc = False

@@ -36,19 +36,17 @@ def make_schedule(list_of_teams: list) -> list:
     return schedule
 
 
-def match_day(games_list: list, league_table: DataFrame, silent: bool = True) -> DataFrame:
+def match_day(games_list: list, league_table: DataFrame, declare: dict) -> DataFrame:
     round_stats = create_empty_stats_dict()
     for match in games_list:
-        print(round_stats)
-        sleep(5)
-        game_stats = game(match[0], match[1], league_table, silent)
-        print(game_stats)
-        sleep(5)
+        game_stats = game(match[0], match[1], league_table, declare)
         round_stats = update_stats_table_from_another(game_stats, round_stats)
+    if declare["round_summary"]:
+        print_top_performers(round_stats)
     return round_stats
 
 
-def season(list_of_teams: list, print_summary: bool = False, silent: bool = True):
+def season(list_of_teams: list, declare: dict):
     # TODO: silent dict to determine what is silent and what isn't
 
     league = create_league()
@@ -57,11 +55,20 @@ def season(list_of_teams: list, print_summary: bool = False, silent: bool = True
     for season_round in range(len(game_schedule)):
         print(f"Round {season_round + 1} \n")
         season_stats = \
-            update_stats_table_from_another(match_day(game_schedule[season_round], league, silent), season_stats)
+            update_stats_table_from_another(match_day(game_schedule[season_round], league, declare), season_stats)
         show_league(league)
-    if print_summary:
+    if declare["season_top_team"]:
         print_top_team(league, season_stats)
+    if declare["season_summary"]:
         print_top_performers(season_stats)
 
 
-season(teams, True, False)
+declare_dict = {
+    "gameplay": True,
+    "game_summary": False,
+    "round_summary": False,
+    "season_top_team": False,
+    "season_summary": True
+}
+
+season(teams, declare_dict)

@@ -1,9 +1,12 @@
 from random import choices
 from math import dist
-from data import teams, create_match_team, increase_stat_by, COLOR_RESET, CYAN, PURPLE, WHITE, \
-    NUM_OF_PLAYERS_IN_TEAM, find_top_team, create_empty_stats_dict, get_color, import_players
+from data import teams, increase_stat_by, COLOR_RESET, CYAN, PURPLE, WHITE, \
+    NUM_OF_PLAYERS_IN_TEAM, find_top_team, create_empty_stats_dict, get_color, find_team_by_name
 from pandas import DataFrame
 from player_class import Player
+
+# TODO: split game mechanics and field mechanics
+# TODO: maybe also split preparing in summarizing a game
 
 
 def create_block(line_color: str, dot_color: str = None) -> str:
@@ -107,18 +110,11 @@ def reset_all_positions(team: list, team_is_left: bool):
 
 
 def prepare_match(left_team_name, right_team_name):
-    # TODO: maybe remove left team and right team
-
-    players = import_players()
-    left_team = create_match_team(left_team_name, players)
-    right_team = create_match_team(right_team_name, players)
-
-    #
     game_stats_table = create_empty_stats_dict()
     combined_list = []
-    for team in (left_team, right_team):
-        id_list = list(team["ID"])
-        combined_list.append([Player(id_list[i]) for i in range(NUM_OF_PLAYERS_IN_TEAM)])
+    for team in [left_team_name, right_team_name]:
+        first_index = find_team_by_name(team) * 5
+        combined_list.append([Player(first_index + i) for i in range(NUM_OF_PLAYERS_IN_TEAM)])
     for i, team in enumerate(combined_list):
         reset_all_positions(team, not i)
 

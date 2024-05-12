@@ -1,4 +1,4 @@
-from data import COLOR_RESET, CYAN, PURPLE, WHITE
+from data import COLOR_RESET, COLOR_DICT
 
 
 def create_block(line_color: str, dot_color: str = None) -> str:
@@ -25,7 +25,7 @@ def get_positions(team: list) -> list:
 
 
 def create_field(left_team: list, right_team: list, match_state: dict, carrier_position: tuple):
-    # TODO: check if a blue team plays and change dot color of the carrier accordingly
+    # TODO: maybe can be done more efficiently
 
     left_positions = get_positions(left_team)
     right_positions = get_positions(right_team)
@@ -34,11 +34,11 @@ def create_field(left_team: list, right_team: list, match_state: dict, carrier_p
     for num in range(22):
         # special columns
         if num == 0 or num == 21:
-            header += create_block(PURPLE, str(num))
+            header += create_block(COLOR_DICT["purple"], str(num))
         elif num == 10 or num == 11:
-            header += create_block(CYAN, str(num))
+            header += create_block(COLOR_DICT["cyan"], str(num))
         else:
-            header += create_block(WHITE, str(num))  # Default color for other columns
+            header += create_block(COLOR_DICT["white"], str(num))  # Default color for other columns
     header += "\n"
     field_str += header
 
@@ -47,7 +47,7 @@ def create_field(left_team: list, right_team: list, match_state: dict, carrier_p
         for col in range(22):
             dot = None
             if (row, col) == carrier_position:
-                dot = CYAN
+                dot = match_state["carrier color"]
             elif (row, col) in left_positions:
                 dot = match_state["left color"]
             elif (row, col) in right_positions:
@@ -55,11 +55,11 @@ def create_field(left_team: list, right_team: list, match_state: dict, carrier_p
 
             # special columns
             if col == 0 or col == 21:
-                row_str += create_block(PURPLE, dot)
+                row_str += create_block(COLOR_DICT["purple"], dot)
             elif col == 10 or col == 11:
-                row_str += create_block(CYAN, dot)
+                row_str += create_block(COLOR_DICT["cyan"], dot)
             else:
-                row_str += create_block(WHITE, dot)  # Default color for other columns
+                row_str += create_block(COLOR_DICT["white"], dot)  # Default color for other columns
         row_str += "\n"
         field_str += row_str
     print(field_str)

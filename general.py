@@ -1,7 +1,8 @@
 from random import choices
 from math import dist
 from pandas import DataFrame
-from data import NUM_OF_PLAYERS_IN_TEAM, create_empty_stats_dict, get_color, find_team_by_name, increase_stat_by
+from data import NUM_OF_PLAYERS_IN_TEAM, create_empty_stats_dict, get_color, find_team_by_name, \
+    increase_stat_by, COLOR_DICT
 from player_class import Player
 
 
@@ -27,6 +28,16 @@ def calculate_distance(player1: Player, player2: Player) -> float:
         raise ZeroDivisionError
     else:
         return result
+
+
+def determine_carrier_color(left_team_name, right_team_name):
+    colors = [get_color(left_team_name), get_color(right_team_name)]
+    if COLOR_DICT["blue"] not in colors:
+        return COLOR_DICT["cyan"]
+    elif COLOR_DICT["magenta"] not in colors:
+        return COLOR_DICT["purple"]
+    else:
+        return COLOR_DICT["lime"]
 
 
 def creating_competition(team1: list, team2: list, game_table: DataFrame):
@@ -59,7 +70,8 @@ def prepare_match(left_team_name, right_team_name):
         "phase": 0,
         "turn": 0,
         "left color": get_color(left_team_name),
-        "right color": get_color(right_team_name)
+        "right color": get_color(right_team_name),
+        "carrier color": determine_carrier_color(left_team_name, right_team_name)
     }
     print(f"{left_team_name} Vs {right_team_name}")
     return game_stats_table, combined_list[0], combined_list[1], match_state_dict

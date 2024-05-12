@@ -8,33 +8,34 @@ PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"
 
 
 COLOR_RESET = '\033[0m'
-BLACK = "\033[30m"
-RED = "\033[31m"
-GREEN = "\033[32m"
-YELLOW = "\033[33m"
-BLUE = "\033[34m"
-MAGENTA = "\033[35m"
-CYAN = "\033[36m"
-WHITE = "\033[37m"
-BRIGHT_BLACK = "\033[90m"
-BRIGHT_RED = "\033[91m"
-BRIGHT_GREEN = "\033[92m"
-BRIGHT_YELLOW = "\033[93m"
-BRIGHT_BLUE = "\033[94m"
-BRIGHT_MAGENTA = "\033[95m"
-BRIGHT_CYAN = "\033[96m"
-BRIGHT_WHITE = "\033[97m"
-ORANGE = "\033[38;5;202m"
-PURPLE = "\033[38;5;129m"
-PINK = "\033[38;5;213m"
-LIME = "\033[38;5;154m"
-TEAL = "\033[38;5;37m"
-BROWN = "\033[38;5;124m"
-GRAY = "\033[38;5;240m"
+COLOR_DICT = {
+    "black": "\033[30m",
+    "white": "\033[37m",
+    "red": "\033[31m",
+    "green": "\033[32m",
+    "yellow": "\033[33m",
+    "blue": "\033[34m",
+    "magenta": "\033[35m",
+    "cyan": "\033[36m",
+    "purple": "\033[38;5;129m",
+    "orange": "\033[38;5;202m",
+    "pink": "\033[38;5;213m",
+    "lime": "\033[38;5;154m",
+    "teal": "\033[38;5;37m",
+    "gray": "\033[38;5;240m",
+    "brown": "\033[38;5;124m"
+}
 
 
-teams = [("Team A", RED), ("Team B", BLUE), ("Team C", GREEN), ("Team D", YELLOW),
-         ("Team E", MAGENTA), ("Team F", ORANGE), ("Team G", GRAY), ("Team H", BROWN)]
+teams = [("Team A", COLOR_DICT["red"]),
+         ("Team B", COLOR_DICT["blue"]),
+         ("Team C", COLOR_DICT["green"]),
+         ("Team D", COLOR_DICT["yellow"]),
+         ("Team E", COLOR_DICT["magenta"]),
+         ("Team F", COLOR_DICT["orange"]),
+         ("Team G", COLOR_DICT["gray"]),
+         ("Team H", COLOR_DICT["brown"])
+         ]
 
 
 def find_team_by_name(team_name: str) -> int:
@@ -46,12 +47,12 @@ def find_team_by_name(team_name: str) -> int:
 
 
 def get_color(team_name: str) -> str:
-    color = WHITE
+    color = COLOR_DICT["white"]
     for t in teams:
         if t[0] == team_name:
             color = t[1]
             return color
-    if color == WHITE:
+    if color == COLOR_DICT["white"]:
         raise ValueError("Team not found")
 
 

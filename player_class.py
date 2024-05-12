@@ -1,4 +1,4 @@
-from data import import_players, COLOR_RESET, PURPLE, get_color
+from data import import_players, COLOR_RESET, COLOR_DICT, get_color
 from pandas import DataFrame
 
 
@@ -60,6 +60,6 @@ class Player:
         print(self.format_name())
         for player_stat in keys_list[first_index:]:
             if player_stat in top_stat_list:
-                print(PURPLE, end="")
+                print(COLOR_DICT["purple"], end="")
             print("   ", player_stat, stats_table.loc[self.id, player_stat])
             print(COLOR_RESET, end="")

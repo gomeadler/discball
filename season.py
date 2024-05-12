@@ -1,6 +1,6 @@
 from game import game
 from data import show_league, create_league, create_empty_stats_dict, update_stats_table_from_another, teams
-from general import print_top_performers, print_top_team
+from summarizing import print_top_performers, print_top_team
 from pandas import DataFrame
 # from time import sleep
 
@@ -70,4 +70,8 @@ declare_dict = {
     "season_summary": True
 }
 
+# A game for checking out stuff:
+#     game("Team A", "Team B", create_league(), declare_dict)
+
+# A season for checking out stuff:
 season(teams, declare_dict)

@@ -1,4 +1,5 @@
-from general import creating_competition, prepare_match, reset_all_positions, print_top_performers
+from general import creating_competition, prepare_match, reset_all_positions
+from summarizing import print_top_performers
 from turn import turn
 from pandas import DataFrame
 from data import update_league_table, POINTS_FOR_WIN

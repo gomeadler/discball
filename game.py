@@ -2,7 +2,6 @@ from general import creating_competition, prepare_match, reset_all_positions, pr
 from turn import turn
 from pandas import DataFrame
 from data import update_league_table, POINTS_FOR_WIN
-from time import sleep
 
 
 def phase(match_state: dict, left_team_players_list: list, right_team_players_list: list,

@@ -1,6 +1,6 @@
 from data import COLOR_RESET, increase_stat_by
 from player_class import Player
-from general import create_field
+from field_mechanics import create_field
 from pandas import DataFrame
 from random import randint
 from face_off import face_off

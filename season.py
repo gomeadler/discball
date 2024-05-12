@@ -2,7 +2,7 @@ from game import game
 from data import show_league, create_league, create_empty_stats_dict, update_stats_table_from_another, teams
 from general import print_top_performers, print_top_team
 from pandas import DataFrame
-from time import sleep
+# from time import sleep
 
 
 def make_schedule(list_of_teams: list) -> list:

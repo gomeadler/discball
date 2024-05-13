@@ -71,7 +71,7 @@ declare_dict = {
 }
 
 # A game for checking out stuff:
-#     game("Team A", "Team B", create_league(), declare_dict)
+#  game("Team A", "Team B", create_league(), declare_dict)
 
 # A season for checking out stuff:
-season(teams, declare_dict)
+#  season(teams, declare_dict)

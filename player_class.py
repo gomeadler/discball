@@ -7,7 +7,7 @@ class Player:
     """A class representing a player during a game."""
 
     def __init__(self, player_id: int):
-        # TODO: maybe make every attribute it's own attribute instead of using the dataframe
+        # TODO: maybe make every attribute its own attribute instead of using the dataframe
         """Initializing a player instance.
 
         :param player_id: an integer representing the player's ID in the players Dataframe.

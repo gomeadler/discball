@@ -1,10 +1,9 @@
 from pandas import DataFrame
-from data import teams, NUM_OF_PLAYERS_IN_TEAM
+from data import NUM_OF_PLAYERS_IN_TEAM
 from player_class import Player
-from team_class import Team
 
 
-def find_top_team(table: DataFrame) -> int:
+def find_top_team_id(table: DataFrame) -> int:
     sorted_ids = table.sort_values(by=["points"], ascending=False).loc[:, "ID"].to_list()
     return sorted_ids[0]
 
@@ -35,9 +34,8 @@ def print_top_performers(stats_table: DataFrame):
 
 
 def print_top_team(league_table: DataFrame, stats_table: DataFrame):
-    # TODO: once there is an Excel, this should change
-    top_team = find_top_team(league_table)
-    print(f"{teams[top_team][0]} have won the league!\n"
+    top_team = find_top_team_id(league_table)
+    print(f"{league_table.loc[top_team, 'Name']} have won the league!\n"
           f"Congrats to their excellent players:")
     first_player_index = top_team * NUM_OF_PLAYERS_IN_TEAM
 

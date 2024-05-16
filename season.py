@@ -7,11 +7,11 @@ from team_class import Team
 # from time import sleep
 
 
-def create_teams_list(list_of_teams: teams) -> list:
+def create_teams_list(list_of_teams: list, list_of_colors: list) -> list:
     list_of_team_objects = []
     for team_index in range(len(list_of_teams)):
         team_name = list_of_teams[team_index][0]
-        team_color = colors[team_index]
+        team_color = list_of_colors[team_index]
         player_indexes = [(i + (team_index * NUM_OF_PLAYERS_IN_TEAM)) for i in range(NUM_OF_PLAYERS_IN_TEAM)]
         list_of_team_objects.append(Team(team_index, team_name, team_color, player_indexes))
     return list_of_team_objects
@@ -58,11 +58,19 @@ def match_day(games_list: list, league_table: DataFrame, declare: dict) -> DataF
     return round_stats
 
 
-def season(original_list_of_teams: list, declare: dict):
+def season(original_list_of_teams: list, original_list_of_colors: list, declare: dict):
+    """
+    runs a simulation of a full season of disc_ball
+
+    :param original_list_of_teams: a list with all the teams names
+    :param original_list_of_colors: a list with the corresponding colors
+    :param declare: a dict with instructions to what should be presented and what's not
+    :return:
+    """
 
     league = import_league()
     season_stats = create_empty_stats_dict()
-    teams_list = list(set(create_teams_list(original_list_of_teams)))
+    teams_list = list(set(create_teams_list(original_list_of_teams, original_list_of_colors)))
     game_schedule = make_schedule(teams_list)
     for season_round in range(len(game_schedule)):
         print(f"Round {season_round + 1} \n")
@@ -79,7 +87,7 @@ declare_dict = {
     "gameplay": False,
     "game_summary": False,
     "round_summary": False,
-    "season_top_team": False,
+    "season_top_team": True,
     "season_summary": True
 }
 
@@ -87,4 +95,4 @@ declare_dict = {
 #  game("Team A", "Team B", create_league(), declare_dict)
 
 # A season for checking out stuff:
-season(teams, declare_dict)
+season(teams, colors, declare_dict)

@@ -29,23 +29,13 @@ COLOR_DICT = {
 }
 
 
-teams = [("Team A", COLOR_DICT["red"]),
-         ("Team B", COLOR_DICT["blue"]),
-         ("Team C", COLOR_DICT["green"]),
-         ("Team D", COLOR_DICT["yellow"]),
-         ("Team E", COLOR_DICT["magenta"]),
-         ("Team F", COLOR_DICT["orange"]),
-         ("Team G", COLOR_DICT["gray"]),
-         ("Team H", COLOR_DICT["brown"])
-         ]
-#  TODO: make teams Excel sheet
-
+teams = ["Team A", "Team B", "Team C", "Team D", "Team E", "Team F", "Team G", "Team H"]
 colors = ["red", "blue", "green", "yellow", "magenta", "orange", "gray", "brown"]
 
 
 def find_team_by_name(team_name: str) -> int:
     for index, team in enumerate(teams):
-        if team[0] == team_name:
+        if team == team_name:
             return index
 
     raise ValueError("Team not found")
@@ -54,7 +44,7 @@ def find_team_by_name(team_name: str) -> int:
 def get_color(team_name: str) -> str:
     color = COLOR_DICT["white"]
     for t in teams:
-        if t[0] == team_name:
+        if t == team_name:
             color = t[1]
             return color
     if color == COLOR_DICT["white"]:
@@ -69,7 +59,7 @@ def create_league(path) -> DataFrame:
     league = {
         "ID": [i for i in range(NUM_OF_TEAMS)],
         "Color": [i for i in colors],
-        "Name": [i[0] for i in teams]
+        "Name": [i for i in teams]
     }
     df = DataFrame(league)
     df.to_excel(path, index=False)
@@ -92,36 +82,42 @@ def import_league():
 
 
 def create_empty_stats_dict() -> DataFrame:
+    total_num_of_players = NUM_OF_PLAYERS_IN_TEAM * NUM_OF_TEAMS
+
+    # TODO: can it be more efficient?
     stats_dict = {
-        "ID": [i for i in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "distance_covered": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "distance_carried": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "touchdowns": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "turns_in_touchdown_strip": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "creations": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "evasions": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "successful_shots": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "successful_takedowns": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "carrier_takedowns": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "hits_taken": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "balance_losses": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "drops_made": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))]
+        "ID": [i for i in range(total_num_of_players)],
+        "distance_covered": [0 for _ in range(total_num_of_players)],
+        "distance_carried": [0 for _ in range(total_num_of_players)],
+        "touchdowns": [0 for _ in range(total_num_of_players)],
+        "turns_in_touchdown_strip": [0 for _ in range(total_num_of_players)],
+        "creations": [0 for _ in range(total_num_of_players)],
+        "evasions": [0 for _ in range(total_num_of_players)],
+        "successful_shots": [0 for _ in range(total_num_of_players)],
+        "successful_takedowns": [0 for _ in range(total_num_of_players)],
+        "carrier_takedowns": [0 for _ in range(total_num_of_players)],
+        "hits_taken": [0 for _ in range(total_num_of_players)],
+        "balance_losses": [0 for _ in range(total_num_of_players)],
+        "drops_made": [0 for _ in range(total_num_of_players)]
     }
     return DataFrame(stats_dict)
 
 
 def create_players(path) -> DataFrame:
+    total_num_of_players = NUM_OF_PLAYERS_IN_TEAM * NUM_OF_TEAMS
+
+    # TODO: also here. improve efficiency?
     player_ability_dict = {
-        "ID": [i for i in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "Name": [get_first_name("Male") for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "Team": [teams[i][0] for i in range(len(teams)) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "Color": [colors[i] for i in range(len(teams)) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "Shirt number": [i + 1 for _ in range(len(teams)) for i in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "speed": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "agility": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "creating": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "shooting": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
-        "stability": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
+        "ID": [i for i in range(total_num_of_players)],
+        "Name": [get_first_name("Male") for _ in range(total_num_of_players)],
+        "Team": [teams[i][0] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
+        "Color": [colors[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
+        "Shirt number": [i + 1 for _ in range(NUM_OF_TEAMS) for i in range(NUM_OF_PLAYERS_IN_TEAM)],
+        "speed": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
+        "agility": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
+        "creating": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
+        "shooting": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
+        "stability": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)]
     }
     players_df = DataFrame(player_ability_dict)
     players_df.to_excel(path, index=False)
@@ -191,6 +187,3 @@ def show_league(table: DataFrame):
             print("".join([str(row) + "  ", teams[sorted_ids[row - 1]][1], sorted_table[row], COLOR_RESET]))
 
     print("\n")
-
-
-import_league()

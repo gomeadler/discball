@@ -1,5 +1,5 @@
 from game import game
-from data import show_league, create_league, create_empty_stats_dict, update_stats_table_from_another, teams, colors, \
+from data import show_league, import_league, create_empty_stats_dict, update_stats_table_from_another, teams, colors, \
     NUM_OF_PLAYERS_IN_TEAM
 from summarizing import print_top_performers, print_top_team
 from pandas import DataFrame
@@ -60,7 +60,7 @@ def match_day(games_list: list, league_table: DataFrame, declare: dict) -> DataF
 
 def season(original_list_of_teams: list, declare: dict):
 
-    league = create_league()
+    league = import_league()
     season_stats = create_empty_stats_dict()
     teams_list = list(set(create_teams_list(original_list_of_teams)))
     game_schedule = make_schedule(teams_list)
@@ -76,7 +76,7 @@ def season(original_list_of_teams: list, declare: dict):
 
 
 declare_dict = {
-    "gameplay": True,
+    "gameplay": False,
     "game_summary": False,
     "round_summary": False,
     "season_top_team": False,
@@ -87,4 +87,4 @@ declare_dict = {
 #  game("Team A", "Team B", create_league(), declare_dict)
 
 # A season for checking out stuff:
-#  season(teams, declare_dict)
+season(teams, declare_dict)

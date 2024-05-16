@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from data import COLOR_DICT, increase_stat_by
+from data import COLOR_DICT
 from player_class import Player
 
 
@@ -27,7 +27,7 @@ class Team:
 
     def advance_all(self, table: DataFrame):
         for player in self.players_list:
-            player.advance(table)
+            player.advance(self.is_left, table)
 
     def update_players(self, list_of_player_indexes: list):
         self.players_list = tuple([Player(i) for i in list_of_player_indexes])

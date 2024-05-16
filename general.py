@@ -42,7 +42,7 @@ def creating_competition(left_team: Team, right_team: Team, game_table: DataFram
     carrier = choose_player_by_probabilities(eligible_players, creating_attributes)
     carrier.has_disc = True
     increase_stat_by(game_table, carrier.id, "creations", 1)
-    if carrier in left_team:
+    if carrier in left_team.players_list:
         return carrier, left_team
     else:
         return carrier, right_team

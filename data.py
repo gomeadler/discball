@@ -3,8 +3,10 @@ from numpy import random, clip
 from names import get_first_name
 
 NUM_OF_PLAYERS_IN_TEAM = 5
+NUM_OF_TEAMS = 8
 POINTS_FOR_WIN = 10
-PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"
+PLAYERS_PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"
+TEAMS_PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\teams_excel.xlsx"
 
 
 COLOR_RESET = '\033[0m'
@@ -63,20 +65,30 @@ def random_gaussian_number(mean, std_dev, min_value, max_value) -> int:
     return int(clip(round(random.normal(mean, std_dev)), min_value, max_value))
 
 
-def create_league() -> DataFrame:
-    league_dict = {
-        "ID": [i for i in range(len(teams))],
-        "Color": [i[1] for i in teams],  # TODO: replace with color name?
-        "Name": [i[0] for i in teams],
-        "touchdowns": [0 for _ in teams],
-        "conceded": [0 for _ in teams],
-        "ratio": [0 for _ in teams],
-        "points": [0 for _ in teams]
+def create_league(path) -> DataFrame:
+    league = {
+        "ID": [i for i in range(NUM_OF_TEAMS)],
+        "Color": [i for i in colors],
+        "Name": [i[0] for i in teams]
     }
-    df = DataFrame(league_dict)
-    df = df.astype(dtype={"ID": int, "Color": str, 'Name': str, "touchdowns": int,
-                          "conceded": int, "ratio": int, "points": int})
+    df = DataFrame(league)
+    df.to_excel(path, index=False)
     return df
+
+
+def import_league():
+    df = read_excel(TEAMS_PATH)
+    team_colors = [df.loc[i, "Color"] for i in range(NUM_OF_TEAMS)]
+    league_dict = {
+        "ID": list(df["ID"]),
+        "Color": [COLOR_DICT[team_colors[i]] for i in range(NUM_OF_TEAMS)],
+        "Name": list(df["Name"]),
+        "touchdowns": [0 for _ in range(NUM_OF_TEAMS)],
+        "conceded": [0 for _ in range(NUM_OF_TEAMS)],
+        "ratio": [0 for _ in range(NUM_OF_TEAMS)],
+        "points": [0 for _ in range(NUM_OF_TEAMS)]
+    }
+    return DataFrame(league_dict)
 
 
 def create_empty_stats_dict() -> DataFrame:
@@ -117,15 +129,11 @@ def create_players(path) -> DataFrame:
 
 
 def import_players():
-    return read_excel(PATH)
+    return read_excel(PLAYERS_PATH)
 
 
 def clear_table(table_name: DataFrame):
     table_name.loc[:, :] = 0
-
-
-def initiate_league_and_players():
-    return create_league(), create_players(PATH), create_empty_stats_dict()
 
 
 def increase_stat_by(table: DataFrame, player: int, stat: str, amount: int):
@@ -184,3 +192,5 @@ def show_league(table: DataFrame):
 
     print("\n")
 
+
+import_league()

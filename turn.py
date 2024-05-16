@@ -9,6 +9,7 @@ from time import sleep
 
 
 def declare_state(left_team: Team, right_team: Team, match_state: dict, carrier: Player):
+    # TODO: maybe the formatting can be better
     system("cls")
     len_left = len(left_team.name) // 2
     len_right = len(right_team.name) // 2

@@ -65,9 +65,9 @@ class Player:
             advance_blocks = 1
         return advance_blocks
 
-    def advance(self, table: DataFrame):
-        threshold = 10 if self.is_left else 11
-        direction = 1 if self.is_left else -1
+    def advance(self, team_is_left: bool, table: DataFrame):
+        threshold = 10 if team_is_left else 11
+        direction = 1 if team_is_left else -1
 
         if self.column == threshold:
             increase_stat_by(table, self.id, "turns_in_touchdown_strip", 1)

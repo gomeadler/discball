@@ -36,6 +36,9 @@ teams = [("Team A", COLOR_DICT["red"]),
          ("Team G", COLOR_DICT["gray"]),
          ("Team H", COLOR_DICT["brown"])
          ]
+#  TODO: make teams Excel sheet
+
+colors = ["red", "blue", "green", "yellow", "magenta", "orange", "gray", "brown"]
 
 
 def find_team_by_name(team_name: str) -> int:
@@ -63,7 +66,7 @@ def random_gaussian_number(mean, std_dev, min_value, max_value) -> int:
 def create_league() -> DataFrame:
     league_dict = {
         "ID": [i for i in range(len(teams))],
-        "Color": [i[1] for i in teams],
+        "Color": [i[1] for i in teams],  # TODO: replace with color name?
         "Name": [i[0] for i in teams],
         "touchdowns": [0 for _ in teams],
         "conceded": [0 for _ in teams],
@@ -95,33 +98,12 @@ def create_empty_stats_dict() -> DataFrame:
     return DataFrame(stats_dict)
 
 
-def create_match_team(team: str, players_table: DataFrame) -> DataFrame:
-    new_table = players_table.query(f"Team == '{team}'")
-
-    stats_dict = {
-        "ID": [list(new_table["ID"])[i] for i in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "player": [list(new_table["Name"])[i] for i in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "distance_covered": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "distance_carried": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "touchdowns": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "turns_in_touchdown_strip": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "creations": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "evasions": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "successful_shots": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "successful_takedowns": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "carrier_takedowns": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "hits_taken": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "balance_losses": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "drops_made": [0 for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-    }
-    return DataFrame(stats_dict)
-
-
 def create_players(path) -> DataFrame:
     player_ability_dict = {
         "ID": [i for i in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "Name": [get_first_name("Male") for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "Team": [teams[i][0] for i in range(len(teams)) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
+        "Color": [colors[i] for i in range(len(teams)) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
         "Shirt number": [i + 1 for _ in range(len(teams)) for i in range(NUM_OF_PLAYERS_IN_TEAM)],
         "speed": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
         "agility": [random_gaussian_number(60, 10, 0, 100) for _ in range(NUM_OF_PLAYERS_IN_TEAM * len(teams))],
@@ -202,7 +184,3 @@ def show_league(table: DataFrame):
 
     print("\n")
 
-
-def find_top_team(table: DataFrame) -> int:
-    sorted_ids = table.sort_values(by=["points"], ascending=False).loc[:, "ID"].to_list()
-    return sorted_ids[0]

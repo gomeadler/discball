@@ -1,11 +1,13 @@
-from data import import_players, COLOR_RESET, COLOR_DICT, get_color
+from data import import_players, COLOR_RESET, COLOR_DICT, increase_stat_by
 from pandas import DataFrame
+from random import randint
 
 
 class Player:
     """A class representing a player during a game."""
 
     def __init__(self, player_id: int):
+        # TODO: maybe make every attribute it's own attribute instead of using the dataframe
         """Initializing a player instance.
 
         :param player_id: an integer representing the player's ID in the players Dataframe.
@@ -13,6 +15,7 @@ class Player:
         players = import_players()
         self.attributes = players.loc[player_id]
         self.id = player_id
+        self.color = COLOR_DICT[players.loc[player_id, "Color"]]
         self.has_disc = False
         self.row = None
         self.column = None
@@ -45,14 +48,46 @@ class Player:
                 self.column += 1
                 self.delay = True
 
+    def determine_blocks(self):
+        """randomizes the number of blocks a certain player would advance.
+        """
+        # TODO: special qualities such as sprinter and slow starter
+
+        if self.delay:
+            self.delay = False
+            return 0
+        run_attempt = randint(1, self.attributes["speed"])
+        if run_attempt > 66:
+            advance_blocks = 3
+        elif run_attempt > 33:
+            advance_blocks = 2
+        else:
+            advance_blocks = 1
+        return advance_blocks
+
+    def advance(self, table: DataFrame):
+        threshold = 10 if self.is_left else 11
+        direction = 1 if self.is_left else -1
+
+        if self.column == threshold:
+            increase_stat_by(table, self.id, "turns_in_touchdown_strip", 1)
+        else:
+            distance = abs(self.column - threshold)
+            blocks = self.determine_blocks()
+            if distance < blocks:
+                blocks = distance
+            increase_stat_by(table, self.id, "distance_covered", blocks)
+            self.column += blocks * direction
+            if self.has_disc:
+                increase_stat_by(table, self.id, "distance_carried", blocks)
+
     def format_name(self) -> str:
         """
         formats a player's name to match its Team's color.
 
         :return: string of ANSI escape code (of the Team's color), player's name and ANSI escape code (of a color reset)
         """
-        color = get_color(self.attributes["Team"])
-        return "".join([color, self.attributes["Name"], COLOR_RESET])
+        return "".join([self.color, self.attributes["Name"], COLOR_RESET])
 
     def present_player(self, stats_table: DataFrame, top_stat_list: list):
         keys_list = list(stats_table.keys())

@@ -1,8 +1,20 @@
 from game import game
-from data import show_league, create_league, create_empty_stats_dict, update_stats_table_from_another, teams
+from data import show_league, create_league, create_empty_stats_dict, update_stats_table_from_another, teams, colors, \
+    NUM_OF_PLAYERS_IN_TEAM
 from summarizing import print_top_performers, print_top_team
 from pandas import DataFrame
+from team_class import Team
 # from time import sleep
+
+
+def create_teams_list(list_of_teams: teams) -> list:
+    list_of_team_objects = []
+    for team_index in range(len(list_of_teams)):
+        team_name = list_of_teams[team_index][0]
+        team_color = colors[team_index]
+        player_indexes = [(i + (team_index * NUM_OF_PLAYERS_IN_TEAM)) for i in range(NUM_OF_PLAYERS_IN_TEAM)]
+        list_of_team_objects.append(Team(team_index, team_name, team_color, player_indexes))
+    return list_of_team_objects
 
 
 def make_schedule(list_of_teams: list) -> list:
@@ -46,11 +58,12 @@ def match_day(games_list: list, league_table: DataFrame, declare: dict) -> DataF
     return round_stats
 
 
-def season(list_of_teams: list, declare: dict):
+def season(original_list_of_teams: list, declare: dict):
 
     league = create_league()
     season_stats = create_empty_stats_dict()
-    game_schedule = make_schedule(list(set([team[0] for team in list_of_teams])))
+    teams_list = list(set(create_teams_list(original_list_of_teams)))
+    game_schedule = make_schedule(teams_list)
     for season_round in range(len(game_schedule)):
         print(f"Round {season_round + 1} \n")
         season_stats = \

@@ -1,14 +1,9 @@
 from random import choices
 from math import dist
 from pandas import DataFrame
-from data import NUM_OF_PLAYERS_IN_TEAM, create_empty_stats_dict, get_color, find_team_by_name, \
-    increase_stat_by, COLOR_DICT
+from data import create_empty_stats_dict, increase_stat_by, COLOR_DICT
 from player_class import Player
-
-
-def reset_all_positions(team: list, team_is_left: bool):
-    for player in team:
-        player.reset_position(team_is_left, False)
+from team_class import Team
 
 
 def choose_player_by_probabilities(options: list, probabilities: list) -> Player:
@@ -30,8 +25,8 @@ def calculate_distance(player1: Player, player2: Player) -> float:
         return result
 
 
-def determine_carrier_color(left_team_name, right_team_name):
-    colors = [get_color(left_team_name), get_color(right_team_name)]
+def determine_carrier_color(left_team: Team, right_team: Team):
+    colors = [left_team.color, right_team.color]
     if COLOR_DICT["blue"] not in colors:
         return COLOR_DICT["cyan"]
     elif COLOR_DICT["magenta"] not in colors:
@@ -40,38 +35,36 @@ def determine_carrier_color(left_team_name, right_team_name):
         return COLOR_DICT["lime"]
 
 
-def creating_competition(team1: list, team2: list, game_table: DataFrame):
-    eligible_players = [player for player in team1 + team2 if player.column not in [0, 21]]
+def creating_competition(left_team: Team, right_team: Team, game_table: DataFrame):
+    eligible_players = \
+        [player for player in left_team.players_list + right_team.players_list if player.column not in [0, 21]]
     creating_attributes = [player.attributes["creating"] for player in eligible_players]
     carrier = choose_player_by_probabilities(eligible_players, creating_attributes)
     carrier.has_disc = True
     increase_stat_by(game_table, carrier.id, "creations", 1)
-    if carrier in team1:
-        return carrier, team1
+    if carrier in left_team:
+        return carrier, left_team
     else:
-        return carrier, team2
+        return carrier, right_team
 
 
-def prepare_match(left_team_name, right_team_name):
+def prepare_match(left_team: Team, right_team: Team):
     game_stats_table = create_empty_stats_dict()
-    combined_list = []
-    for team in [left_team_name, right_team_name]:
-        first_index = find_team_by_name(team) * 5
-        combined_list.append([Player(first_index + i) for i in range(NUM_OF_PLAYERS_IN_TEAM)])
-    for i, team in enumerate(combined_list):
-        reset_all_positions(team, not i)
+    left_team.is_left = True
+    for team in [left_team, right_team]:
+        team.reset_all_positions(False)
 
     match_state_dict = {
-        "left team": left_team_name,
-        "right team": right_team_name,
+        "left team": left_team.name,
+        "right team": right_team.name,
         "left score": 0,
         "right score": 0,
         "set": 0,
         "phase": 0,
         "turn": 0,
-        "left color": get_color(left_team_name),
-        "right color": get_color(right_team_name),
-        "carrier color": determine_carrier_color(left_team_name, right_team_name)
+        "left color": left_team.color,
+        "right color": right_team.color,
+        "carrier color": determine_carrier_color(left_team, right_team)
     }
-    print(f"{left_team_name} Vs {right_team_name}")
-    return game_stats_table, combined_list[0], combined_list[1], match_state_dict
+    print(f"{left_team.name} Vs {right_team.name}")
+    return game_stats_table, match_state_dict

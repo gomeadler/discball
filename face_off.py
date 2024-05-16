@@ -1,5 +1,6 @@
 from pandas import DataFrame
 from player_class import Player
+from team_class import Team
 from data import increase_stat_by
 from general import choose_player_by_probabilities, calculate_distance
 from random import randint
@@ -7,8 +8,10 @@ from typing import Union
 from time import sleep
 
 
-def choose_target(shooter: Player, running_team: list) -> Union[Player, None]:
-    eligible_players = [player for player in running_team if player.column not in [0, 21]]
+def choose_target(shooter: Player, running_team: Team) -> Union[Player, None]:
+    # TODO: maybe do eligible in the previous function and call this one later
+
+    eligible_players = [player for player in running_team.players_list if player.column not in [0, 21]]
     probabilities = []
     if len(eligible_players) == 0:
         return None
@@ -52,11 +55,11 @@ def take_down(target_player: Player, shooter: Player, target_is_left: bool,
         return False
 
 
-def retreat(target_player: Player, shooter: Player, left_team_players_list: list, shot_quality: float,
+def retreat(target_player: Player, shooter: Player, left_team: Team, shot_quality: float,
             game_table: DataFrame) -> bool:
 
     blocks = determine_retreat(target_player.attributes["stability"], shot_quality)
-    target_is_left = bool(target_player in left_team_players_list)
+    target_is_left = bool(target_player in left_team.players_list)
     there_is_a_takedown = False
     if target_is_left and target_player.column <= blocks:
         there_is_a_takedown = True
@@ -76,7 +79,7 @@ def retreat(target_player: Player, shooter: Player, left_team_players_list: list
         return False
 
 
-def face_off(shooter: Player, running_team: list, left_team_players_list: list,
+def face_off(shooter: Player, running_team: Team, left_team: Team,
              game_table: DataFrame, silent: bool) -> (bool, str):
     # choose a target
     target_player = choose_target(shooter, running_team)
@@ -95,7 +98,7 @@ def face_off(shooter: Player, running_team: list, left_team_players_list: list,
             print(f"{shooter.format_name()} hit {target_player.format_name()}")
             sleep(1)
 
-        there_was_a_drop = retreat(target_player, shooter, left_team_players_list, shot_quality, game_table)
+        there_was_a_drop = retreat(target_player, shooter, left_team, shot_quality, game_table)
         return there_was_a_drop
     else:
         increase_stat_by(game_table, target_player.id, "evasions", 1)

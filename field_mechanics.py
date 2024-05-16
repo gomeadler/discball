@@ -1,18 +1,9 @@
 from data import COLOR_RESET, COLOR_DICT
+from team_class import Team
 
 
 def create_block(line_color: str, dot_color: str = None) -> str:
     return f"{line_color}|{dot_color}|{COLOR_RESET}"
-
-
-def get_positions(team: list) -> list:
-    positions = []
-    for player in team:
-        positions.append(tuple([player.row, player.column]))
-        if player.column not in range(22):
-            raise ValueError(f"{player.format_name()} is in an invalid position. "
-                             f"row: {player.row}, col: {player.column}")
-    return positions
 
 
 def determine_line_color(col: int):
@@ -44,9 +35,9 @@ def make_dot_or_number(row: int, col: int, match_state: dict, carrier_position: 
         return " "
 
 
-def create_field(left_team: list, right_team: list, match_state: dict, carrier_position: tuple):
-    left_positions = get_positions(left_team)
-    right_positions = get_positions(right_team)
+def create_field(left_team: Team, right_team: Team, match_state: dict, carrier_position: tuple):
+    left_positions = left_team.get_positions()
+    right_positions = right_team.get_positions()
     field_str = ""
     for row in range(-1, 10):
         row_str = ""

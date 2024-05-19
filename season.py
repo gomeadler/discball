@@ -7,10 +7,10 @@ from team_class import Team
 # from time import sleep
 
 
-def create_teams_list(list_of_teams: list, list_of_colors: list) -> list:
+def create_team_objects_list(list_of_teams: list, list_of_colors: list) -> list:
     list_of_team_objects = []
     for team_index in range(len(list_of_teams)):
-        team_name = list_of_teams[team_index][0]
+        team_name = list_of_teams[team_index]
         team_color = list_of_colors[team_index]
         player_indexes = [(i + (team_index * NUM_OF_PLAYERS_IN_TEAM)) for i in range(NUM_OF_PLAYERS_IN_TEAM)]
         list_of_team_objects.append(Team(team_index, team_name, team_color, player_indexes))
@@ -70,7 +70,7 @@ def season(original_list_of_teams: list, original_list_of_colors: list, declare:
 
     league = import_league()
     season_stats = create_empty_stats_dict()
-    teams_list = list(set(create_teams_list(original_list_of_teams, original_list_of_colors)))
+    teams_list = list(set(create_team_objects_list(original_list_of_teams, original_list_of_colors)))
     game_schedule = make_schedule(teams_list)
     for season_round in range(len(game_schedule)):
         print(f"Round {season_round + 1} \n")

@@ -156,6 +156,7 @@ def show_league(table: DataFrame):
             print(COLOR_RESET, " ", sorted_table[row_num])
             print_head = False
         else:
-            print("".join([str(row_num) + "  ", COLORS[sorted_ids[row_num - 1]], sorted_table[row_num], COLOR_RESET]))
+            color_name = COLORS[sorted_ids[row_num - 1]]
+            print("".join([str(row_num) + "  ", COLOR_DICT[color_name], sorted_table[row_num], COLOR_RESET]))
 
     print("\n")

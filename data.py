@@ -84,11 +84,12 @@ def create_players(path) -> DataFrame:
         "Team": [TEAMS[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
         "Color": [COLORS[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
         "Shirt number": [i + 1 for _ in range(NUM_OF_TEAMS) for i in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "speed": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
-        "agility": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
-        "creating": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
-        "shooting": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
-        "stability": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)]
+        "speed": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
+        "agility": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
+        "creating": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
+        "shooting": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
+        "stability": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
+        "stamina": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)]
     }
     players_df = DataFrame(player_ability_dict)
     players_df.to_excel(path, index=False)

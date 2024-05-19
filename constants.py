@@ -1,4 +1,5 @@
 NUM_OF_PLAYERS_IN_TEAM = 5
+NUM_OF_PLAYERS_IN_LINE_UP = 5
 NUM_OF_TEAMS = 8
 POINTS_FOR_WIN = 10
 PLAYERS_PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"

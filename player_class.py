@@ -21,6 +21,8 @@ class Player:
         self.row = None
         self.column = None
         self.delay = False
+        self.fatigue = 0
+        self.on_field = False
 
     def reset_position(self, is_left: bool, during_a_set: bool = False):
         """
@@ -73,6 +75,7 @@ class Player:
         if self.column == threshold:
             increase_stat_by(table, self.id, "turns_in_touchdown_strip", 1)
         else:
+            self.fatigue += 1
             distance = abs(self.column - threshold)
             blocks = self.determine_blocks()
             if distance < blocks:

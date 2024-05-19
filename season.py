@@ -95,4 +95,4 @@ declare_dict = {
 #  game("Team A", "Team B", create_league(), declare_dict)
 
 # A season for checking out stuff:
-season(TEAMS, COLORS, declare_dict)
+#   season(TEAMS, COLORS, declare_dict)

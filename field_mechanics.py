@@ -3,7 +3,7 @@ from team_class import Team
 
 
 def create_block(line_color: str, dot_color: str = None) -> str:
-    return f"{line_color}|{dot_color}|{COLOR_RESET}"
+    return f"{line_color}|{dot_color}{line_color}|{COLOR_RESET}"
 
 
 def determine_line_color(col: int):

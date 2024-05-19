@@ -32,7 +32,7 @@ def declare_state(left_team: Team, right_team: Team, match_state: dict, carrier:
 def check_touchdown(carrier: Player, match_state: dict, left_team: Team,
                     game_table: DataFrame) -> bool:
     # determine variables
-    if carrier in left_team.players_list:
+    if carrier in left_team.line_up:
         threshold = 10
         score = "left score"
     else:
@@ -68,7 +68,7 @@ def turn(match_state: dict, carrier: Player, running_team: Team, left_team: Team
 
         there_was_a_drop_at_some_point = False
         taker = None
-        for player in shooting_team.players_list:
+        for player in shooting_team.line_up:
             there_was_a_drop = face_off(player, running_team, left_team, game_table, silent)
             if there_was_a_drop:
                 there_was_a_drop_at_some_point = True

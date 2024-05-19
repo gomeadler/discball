@@ -17,12 +17,13 @@ class Player:
         self.attributes = players.loc[player_id]
         self.id = player_id
         self.color = COLOR_DICT[players.loc[player_id, "Color"]]
+        self.on_field = False
+        self.position = None
         self.has_disc = False
         self.row = None
         self.column = None
         self.delay = False
         self.fatigue = 0
-        self.on_field = False
 
     def reset_position(self, is_left: bool, during_a_set: bool = False):
         """
@@ -36,7 +37,13 @@ class Player:
         """
         self.has_disc = False
         self.delay = False
-        self.row = (self.id % 5) * 2
+        if not self.on_field:
+            self.row = None
+            return
+        try:
+            self.row = self.position * 2
+        except TypeError:
+            print(f"invalid position for this player - {self.position}")
         if is_left:
             self.column = 1
 

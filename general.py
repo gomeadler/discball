@@ -38,12 +38,12 @@ def determine_carrier_color(left_team: Team, right_team: Team):
 
 def creating_competition(left_team: Team, right_team: Team, game_table: DataFrame):
     eligible_players = \
-        [player for player in left_team.players_list + right_team.players_list if player.column not in [0, 21]]
+        [player for player in left_team.line_up + right_team.line_up if player.column not in [0, 21]]
     creating_attributes = [player.attributes["creating"] for player in eligible_players]
     carrier = choose_player_by_probabilities(eligible_players, creating_attributes)
     carrier.has_disc = True
     increase_stat_by(game_table, carrier.id, "creations", 1)
-    if carrier in left_team.players_list:
+    if carrier in left_team.line_up:
         return carrier, left_team
     else:
         return carrier, right_team

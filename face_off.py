@@ -53,7 +53,7 @@ def retreat(target_player: Player, shooter: Player, left_team: Team, shot_qualit
             game_table: DataFrame) -> bool:
 
     blocks = determine_retreat(target_player.attributes["stability"], shot_quality)
-    target_is_left = bool(target_player in left_team.players_list)
+    target_is_left = bool(target_player in left_team.line_up)
     there_is_a_takedown = False
     if target_is_left and target_player.column <= blocks:
         there_is_a_takedown = True
@@ -76,7 +76,7 @@ def retreat(target_player: Player, shooter: Player, left_team: Team, shot_qualit
 def face_off(shooter: Player, running_team: Team, left_team: Team,
              game_table: DataFrame, silent: bool) -> (bool, str):
     # choose a target
-    eligible_players = [player for player in running_team.players_list if player.column not in [0, 21]]
+    eligible_players = [player for player in running_team.line_up if player.column not in [0, 21]]
     if len(eligible_players) == 0:
         return False
     target_player = choose_target(shooter, eligible_players)

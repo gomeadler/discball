@@ -8,6 +8,8 @@ from face_off import face_off
 from os import system
 from time import sleep
 
+# TODO: maybe add pass in the first action of a phase
+
 
 def declare_state(left_team: Team, right_team: Team, match_state: dict, carrier: Player):
     # TODO: maybe the formatting can be better

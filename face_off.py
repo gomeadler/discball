@@ -4,17 +4,11 @@ from team_class import Team
 from data import increase_stat_by
 from general import choose_player_by_probabilities, calculate_distance
 from random import randint
-from typing import Union
 from time import sleep
 
 
-def choose_target(shooter: Player, running_team: Team) -> Union[Player, None]:
-    # TODO: maybe do eligible in the previous function and call this one later
-
-    eligible_players = [player for player in running_team.players_list if player.column not in [0, 21]]
+def choose_target(shooter: Player, eligible_players: list) -> Player:
     probabilities = []
-    if len(eligible_players) == 0:
-        return None
     for rival in eligible_players:
         distance = calculate_distance(shooter, rival)
         try:
@@ -82,9 +76,10 @@ def retreat(target_player: Player, shooter: Player, left_team: Team, shot_qualit
 def face_off(shooter: Player, running_team: Team, left_team: Team,
              game_table: DataFrame, silent: bool) -> (bool, str):
     # choose a target
-    target_player = choose_target(shooter, running_team)
-    if target_player is None:
-        return False, None
+    eligible_players = [player for player in running_team.players_list if player.column not in [0, 21]]
+    if len(eligible_players) == 0:
+        return False
+    target_player = choose_target(shooter, eligible_players)
 
     # determine shot quality and evasion attempt
     shot_quality = randint(1, shooter.attributes["shooting"]) // calculate_distance(shooter, target_player)

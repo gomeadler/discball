@@ -1,4 +1,4 @@
-from data import COLOR_RESET, COLOR_DICT
+from constants import COLOR_RESET, COLOR_DICT
 from team_class import Team
 
 

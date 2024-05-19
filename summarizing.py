@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from data import NUM_OF_PLAYERS_IN_TEAM
+from constants import NUM_OF_PLAYERS_IN_TEAM
 from player_class import Player
 
 

@@ -1,4 +1,5 @@
-from data import COLOR_RESET, increase_stat_by
+from data import increase_stat_by
+from constants import COLOR_RESET
 from player_class import Player
 from team_class import Team
 from field_mechanics import create_field

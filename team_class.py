@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from data import COLOR_DICT
+from constants import COLOR_DICT
 from player_class import Player
 
 

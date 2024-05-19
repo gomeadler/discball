@@ -2,7 +2,8 @@ from general import creating_competition, prepare_match
 from summarizing import print_top_performers
 from turn import turn
 from pandas import DataFrame
-from data import update_league_table, POINTS_FOR_WIN
+from data import update_league_table
+from constants import POINTS_FOR_WIN
 from team_class import Team
 
 

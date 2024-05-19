@@ -1,6 +1,6 @@
+from constants import TEAMS, COLORS, NUM_OF_PLAYERS_IN_TEAM
 from game import game
-from data import show_league, import_league, create_empty_stats_dict, update_stats_table_from_another, teams, colors, \
-    NUM_OF_PLAYERS_IN_TEAM
+from data import show_league, import_league, create_empty_stats_dict, update_stats_table_from_another
 from summarizing import print_top_performers, print_top_team
 from pandas import DataFrame
 from team_class import Team
@@ -62,8 +62,8 @@ def season(original_list_of_teams: list, original_list_of_colors: list, declare:
     """
     runs a simulation of a full season of disc_ball
 
-    :param original_list_of_teams: a list with all the teams names
-    :param original_list_of_colors: a list with the corresponding colors
+    :param original_list_of_teams: a list with all the TEAMS names
+    :param original_list_of_colors: a list with the corresponding COLORS
     :param declare: a dict with instructions to what should be presented and what's not
     :return:
     """
@@ -95,4 +95,4 @@ declare_dict = {
 #  game("Team A", "Team B", create_league(), declare_dict)
 
 # A season for checking out stuff:
-season(teams, colors, declare_dict)
+season(TEAMS, COLORS, declare_dict)

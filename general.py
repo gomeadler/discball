@@ -1,7 +1,8 @@
 from random import choices
 from math import dist
 from pandas import DataFrame
-from data import create_empty_stats_dict, increase_stat_by, COLOR_DICT
+from data import create_empty_stats_dict, increase_stat_by
+from constants import COLOR_DICT
 from player_class import Player
 from team_class import Team
 

@@ -1,40 +1,11 @@
 from pandas import DataFrame, read_excel
 from numpy import random, clip
 from names import get_first_name
-
-NUM_OF_PLAYERS_IN_TEAM = 5
-NUM_OF_TEAMS = 8
-POINTS_FOR_WIN = 10
-PLAYERS_PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\players_excel.xlsx"
-TEAMS_PATH = r"C:\Users\gomea\PycharmProjects\disc_game_pandas\teams_excel.xlsx"
-
-
-COLOR_RESET = '\033[0m'
-COLOR_DICT = {
-    "black": "\033[30m",
-    "white": "\033[37m",
-    "red": "\033[31m",
-    "green": "\033[32m",
-    "yellow": "\033[33m",
-    "blue": "\033[34m",
-    "magenta": "\033[35m",
-    "cyan": "\033[36m",
-    "purple": "\033[38;5;129m",
-    "orange": "\033[38;5;202m",
-    "pink": "\033[38;5;213m",
-    "lime": "\033[38;5;154m",
-    "teal": "\033[38;5;37m",
-    "gray": "\033[38;5;240m",
-    "brown": "\033[38;5;124m"
-}
-
-
-teams = ["Team A", "Team B", "Team C", "Team D", "Team E", "Team F", "Team G", "Team H"]
-colors = ["red", "blue", "green", "yellow", "magenta", "orange", "gray", "brown"]
+from constants import *
 
 
 def find_team_by_name(team_name: str) -> int:
-    for index, team in enumerate(teams):
+    for index, team in enumerate(TEAMS):
         if team == team_name:
             return index
 
@@ -43,7 +14,7 @@ def find_team_by_name(team_name: str) -> int:
 
 def get_color(team_name: str) -> str:
     color = COLOR_DICT["white"]
-    for t in teams:
+    for t in TEAMS:
         if t == team_name:
             color = t[1]
             return color
@@ -58,8 +29,8 @@ def random_gaussian_number(mean, std_dev, min_value, max_value) -> int:
 def create_league(path) -> DataFrame:
     league = {
         "ID": [i for i in range(NUM_OF_TEAMS)],
-        "Color": [i for i in colors],
-        "Name": [i for i in teams]
+        "Color": [i for i in COLORS],
+        "Name": [i for i in TEAMS]
     }
     df = DataFrame(league)
     df.to_excel(path, index=False)
@@ -110,8 +81,8 @@ def create_players(path) -> DataFrame:
     player_ability_dict = {
         "ID": [i for i in range(total_num_of_players)],
         "Name": [get_first_name("Male") for _ in range(total_num_of_players)],
-        "Team": [teams[i][0] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "Color": [colors[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
+        "Team": [TEAMS[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
+        "Color": [COLORS[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
         "Shirt number": [i + 1 for _ in range(NUM_OF_TEAMS) for i in range(NUM_OF_PLAYERS_IN_TEAM)],
         "speed": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
         "agility": [random_gaussian_number(60, 10, 0, 100) for _ in range(total_num_of_players)],
@@ -179,11 +150,11 @@ def show_league(table: DataFrame):
     sorted_ids = table.sort_values(by=["points"], ascending=False).loc[:, "ID"].to_list()
     sorted_table = sorted_table.to_string(index=False).split("\n")
     print_head = True
-    for row in range(len(teams) + 1):
+    for row_num in range(NUM_OF_TEAMS + 1):
         if print_head:
-            print(COLOR_RESET, " ", sorted_table[row])
+            print(COLOR_RESET, " ", sorted_table[row_num])
             print_head = False
         else:
-            print("".join([str(row) + "  ", teams[sorted_ids[row - 1]][1], sorted_table[row], COLOR_RESET]))
+            print("".join([str(row_num) + "  ", COLORS[sorted_ids[row_num - 1]], sorted_table[row_num], COLOR_RESET]))
 
     print("\n")

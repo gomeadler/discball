@@ -1,4 +1,5 @@
-from data import import_players, COLOR_RESET, COLOR_DICT, increase_stat_by
+from constants import COLOR_RESET, COLOR_DICT
+from data import import_players, increase_stat_by
 from pandas import DataFrame
 from random import randint
 

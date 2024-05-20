@@ -34,6 +34,7 @@ def print_top_performers(stats_table: DataFrame):
 
 
 def print_top_team(league_table: DataFrame, stats_table: DataFrame):
+    # TODO: will change
     top_team = find_top_team_id(league_table)
     print(f"{league_table.loc[top_team, 'Name']} have won the league!\n"
           f"Congrats to their excellent players:")

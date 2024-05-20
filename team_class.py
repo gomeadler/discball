@@ -1,10 +1,11 @@
 from pandas import DataFrame
-from constants import COLOR_DICT, NUM_OF_PLAYERS_IN_LINE_UP
+from constants import COLOR_DICT, COLOR_RESET, NUM_OF_PLAYERS_IN_LINE_UP
 from player_class import Player
+from summarizing import find_top_players
+# from data import create_empty_stats_dict
 
 
 class Team:
-
     def __init__(self, team_id, name, color, list_of_player_indexes: list):
         self.team_id = team_id
         self.name = name
@@ -14,6 +15,24 @@ class Team:
         self.line_up = [self.roster[i] for i in range(NUM_OF_PLAYERS_IN_LINE_UP)]
         self.bench_players = []
         self.is_left = False
+        self.update_line_up()
+
+    def display_roster(self):
+        print(self.color + self.name + COLOR_RESET)
+        for player in self.roster:
+            print(player.format_name())
+
+    def present_team(self, stats_table: DataFrame):
+        print(self.color + self.name + COLOR_RESET)
+        top_players, arranged_stats = find_top_players(stats_table.iloc[self.id_list])
+        i = 0
+        for player in self.roster:
+            if player.id in top_players:
+                player.present_player(stats_table, arranged_stats[i])
+                i += 1
+            else:
+                player.present_player(stats_table, [])
+    print("\n")
 
     def reset_all_positions(self, during_a_set: bool):
         self.update_line_up()
@@ -35,6 +54,7 @@ class Team:
             player.advance(self.is_left, table)
 
     def update_players(self):
+        # TODO: is this needed?
         self.roster = [Player(i) for i in self.id_list]
 
     def update_line_up(self):
@@ -61,11 +81,22 @@ class Team:
         outgoing_player.row = None
         self.switch_places(outgoing_player, incoming_player)
 
+    def trade_in_player(self, arriving_player: Player):
+        self.id_list.append(arriving_player.id)
+        self.roster.append(arriving_player)
+        self.update_line_up()
 
-# t = Team(0, "a", "red", [0, 1, 2, 3, 4, 5, 8, 36])
-# for player in t.roster:
-#     print(player.format_name(), player.on_field)
-# t.switch_places(t.roster[2], t.roster[5])
-# t.switch_places(t.roster[1], t.roster[6])
-# for player in t.roster:
-#     print(player.format_name(), player.on_field)
+    def trade_out_player(self, departing_player_id: int):
+        self.id_list.remove(departing_player_id)
+        for player in self.roster:
+            if player.id == departing_player_id:
+                self.roster.remove(player)
+                self.update_line_up()
+                return
+
+
+# t = Team(0, "checking", "red", [0, 1, 2, 3, 4, 5, 8, 36])
+# t.display_roster()
+# t.trade_in_player(Player(18))
+# t.trade_out_player(4)
+# t.display_roster()

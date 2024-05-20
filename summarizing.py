@@ -1,6 +1,8 @@
 from pandas import DataFrame
 from constants import NUM_OF_PLAYERS_IN_TEAM
 from player_class import Player
+from team_class import Team
+from typing import List
 
 
 def find_top_team_id(table: DataFrame) -> int:
@@ -33,22 +35,9 @@ def print_top_performers(stats_table: DataFrame):
         top.present_player(stats_table, arranged_stats[i])
 
 
-def print_top_team(league_table: DataFrame, stats_table: DataFrame):
-    # TODO: will change
-    top_team = find_top_team_id(league_table)
-    print(f"{league_table.loc[top_team, 'Name']} have won the league!\n"
+def print_top_team(team_objects: List[Team], league_table: DataFrame, stats_table: DataFrame):
+    top_team = team_objects[find_top_team_id(league_table)]
+    print(f"{top_team.format_team_name()} have won the league!\n"
           f"Congrats to their excellent players:")
-    first_player_index = top_team * NUM_OF_PLAYERS_IN_TEAM
-
-    top_players, arranged_stats = \
-        find_top_players(stats_table.loc[first_player_index: first_player_index + NUM_OF_PLAYERS_IN_TEAM - 1])
-
-    for player_id in range(first_player_index, first_player_index + NUM_OF_PLAYERS_IN_TEAM):
-        if player_id in top_players:
-            i = top_players.index(player_id)
-            player = Player(player_id)
-            player.present_player(stats_table, arranged_stats[i])
-        else:
-            player = Player(player_id)
-            player.present_player(stats_table, [])
+    top_team.present_team(stats_table)
     print("\n")

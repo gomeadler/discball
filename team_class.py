@@ -17,13 +17,16 @@ class Team:
         self.is_left = False
         self.update_line_up()
 
+    def format_team_name(self):
+        return self.color + self.name + COLOR_RESET
+
     def display_roster(self):
         print(self.color + self.name + COLOR_RESET)
         for player in self.roster:
             print(player.format_name())
 
     def present_team(self, stats_table: DataFrame):
-        print(self.color + self.name + COLOR_RESET)
+        print(self.format_team_name())
         top_players, arranged_stats = find_top_players(stats_table.iloc[self.id_list])
         i = 0
         for player in self.roster:
@@ -32,7 +35,7 @@ class Team:
                 i += 1
             else:
                 player.present_player(stats_table, [])
-    print("\n")
+        print("\n")
 
     def reset_all_positions(self, during_a_set: bool):
         self.update_line_up()

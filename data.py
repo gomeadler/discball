@@ -84,12 +84,12 @@ def create_players(path) -> DataFrame:
         "Team": [TEAMS[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
         "Color": [COLORS[i] for i in range(NUM_OF_TEAMS) for _ in range(NUM_OF_PLAYERS_IN_TEAM)],
         "Shirt number": [i + 1 for _ in range(NUM_OF_TEAMS) for i in range(NUM_OF_PLAYERS_IN_TEAM)],
-        "speed": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
-        "agility": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
-        "creating": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
-        "shooting": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
-        "stability": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)],
-        "stamina": [random_gaussian_number(70, 10, 0, 100) for _ in range(total_num_of_players)]
+        "speed": [random_gaussian_number(65, 10, 0, 100) for _ in range(total_num_of_players)],
+        "agility": [random_gaussian_number(65, 10, 0, 100) for _ in range(total_num_of_players)],
+        "creating": [random_gaussian_number(65, 10, 0, 100) for _ in range(total_num_of_players)],
+        "shooting": [random_gaussian_number(65, 10, 0, 100) for _ in range(total_num_of_players)],
+        "stability": [random_gaussian_number(65, 10, 0, 100) for _ in range(total_num_of_players)],
+        "stamina": [random_gaussian_number(65, 10, 0, 100) for _ in range(total_num_of_players)]
     }
     players_df = DataFrame(player_ability_dict)
     players_df.to_excel(path, index=False)
@@ -147,8 +147,8 @@ def update_league_table(left_team_name: str, right_team_name: str, match_summary
 
 
 def show_league(table: DataFrame):
-    sorted_table = table.sort_values(by=["points"], ascending=False).loc[:, "Name":]
-    sorted_ids = table.sort_values(by=["points"], ascending=False).loc[:, "ID"].to_list()
+    sorted_table = table.sort_values(by=["points", "ratio"], ascending=False).loc[:, "Name":]
+    sorted_ids = table.sort_values(by=["points", "ratio"], ascending=False).loc[:, "ID"].to_list()
     sorted_table = sorted_table.to_string(index=False).split("\n")
     print_head = True
     for row_num in range(NUM_OF_TEAMS + 1):
@@ -160,3 +160,21 @@ def show_league(table: DataFrame):
             print("".join([str(row_num) + "  ", COLOR_DICT[color_name], sorted_table[row_num], COLOR_RESET]))
 
     print("\n")
+
+
+def find_top_players(stats_table: DataFrame):
+    keys_list = list(stats_table.keys())
+    first_index = keys_list.index("distance_covered")
+    top_players_list = []
+    arranged_stats = []
+    for stat in keys_list[first_index:]:
+        sorted_table = stats_table.sort_values(by=[stat], ascending=False)
+        top_index = int(sorted_table["ID"].iloc[0])
+        if top_index in top_players_list:
+            arranged_stats[top_players_list.index(top_index)].append(stat)
+        else:
+            top_players_list.append(top_index)
+            arranged_stats.append([stat])
+
+    return top_players_list, arranged_stats
+

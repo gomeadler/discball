@@ -78,7 +78,7 @@ def season(original_list_of_teams: list, original_list_of_colors: list, declare:
             update_stats_table_from_another(match_day(game_schedule[season_round], league, declare), season_stats)
         show_league(league)
     if declare["season_top_team"]:
-        print_top_team(league, season_stats)
+        print_top_team(teams_list, league, season_stats)
     if declare["season_summary"]:
         print_top_performers(season_stats)
 
@@ -95,4 +95,4 @@ declare_dict = {
 #  game("Team A", "Team B", create_league(), declare_dict)
 
 # A season for checking out stuff:
-#   season(TEAMS, COLORS, declare_dict)
+season(TEAMS, COLORS, declare_dict)

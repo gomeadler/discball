@@ -1,7 +1,7 @@
 from pandas import DataFrame
 from constants import COLOR_DICT, COLOR_RESET, NUM_OF_PLAYERS_IN_LINE_UP
 from player_class import Player
-from summarizing import find_top_players
+from data import find_top_players
 # from data import create_empty_stats_dict
 
 

@@ -13,10 +13,10 @@ class Team:
         self.id_list = list_of_player_indexes
         self.roster = [Player(i) for i in self.id_list]
         self.line_up = [self.roster[i] for i in range(NUM_OF_PLAYERS_IN_LINE_UP)]
-        self.default_starting_roster_ids = self.id_list
+        self.default_starting_roster_ids = self.id_list[:]
         self.bench_players = []
         self.is_left = False
-        self.substitute_flag = False
+        self.can_substitute = False
         self.update_line_up()
 
     def format_team_name(self):

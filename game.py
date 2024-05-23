@@ -19,8 +19,24 @@ def phase(match_state: dict, left_team: Team, right_team: Team,
             break
 
 
+def check_and_make_substitution(left_team: Team, right_team: Team, state_dict: dict, silent: bool):
+    scores = [state_dict["left score"], state_dict["right score"]]
+    for i, team in enumerate([left_team, right_team]):
+        if scores[i] % 3 == 0:
+            if team.can_substitute:
+                outgoing_player = team.line_up[random.randint(0, 4)]
+                num = (scores[i] // 3) - 1
+                incoming_player = team.bench_players[num]
+                team.substitute(outgoing_player, incoming_player)
+                team.can_substitute = False
+
+                if not silent:
+                    print(f"{outgoing_player.format_name()} was replaced by {incoming_player.format_name()}")
+        else:
+            team.can_substitute = True
+
+
 def game(left_team: Team, right_team: Team, league_table: DataFrame, declare: dict) -> DataFrame:
-    # TODO: check if there was already a substitute and then decide if to do the substitution or not
 
     # preparing the match
     game_table, state_dict = prepare_match(left_team, right_team)
@@ -37,18 +53,7 @@ def game(left_team: Team, right_team: Team, league_table: DataFrame, declare: di
         phase(state_dict, left_team, right_team, game_table, silent)
 
         # substitutions
-        if state_dict["left score"] != 0 and state_dict["left score"] % 3 == 0:
-            outgoing_player = left_team.line_up[random.randint(0, 4)]
-            incoming_player = left_team.bench_players[(state_dict["left score"] // 3) - 1]
-            left_team.substitute(outgoing_player, incoming_player)
-            if not silent:
-                print(f"{outgoing_player.format_name()} was replaced by {incoming_player.format_name()}")
-        if state_dict["right score"] != 0 and state_dict["right score"] % 3 == 0:
-            outgoing_player = right_team.line_up[random.randint(0, 4)]
-            incoming_player = right_team.bench_players[(state_dict["left score"] // 3) - 1]
-            right_team.substitute(outgoing_player, incoming_player)
-            if not silent:
-                print(f"{outgoing_player.format_name()} was replaced by {incoming_player.format_name()}")
+        check_and_make_substitution(left_team, right_team, state_dict, silent)
 
     # match conclusion
     conclude_match(left_team, right_team, state_dict, league_table)

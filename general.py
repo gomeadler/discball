@@ -76,7 +76,7 @@ def prepare_match(left_team: Team, right_team: Team):
 def conclude_match(left_team: Team, right_team: Team, state_dict: dict, league_table: DataFrame):
     left_team.is_left = False
     for team in [left_team, right_team]:
-        team.substitute_flag = False
+        team.can_substitute = False
         team.update_roster_and_line_up_to_default()
 
     print(f"{left_team.name if state_dict['left score'] == POINTS_FOR_WIN else right_team.name} won! \n"

@@ -92,7 +92,7 @@ declare_dict = {
 }
 
 # A game for checking out stuff:
-game(Team(0, "A", "red", list(range(0, 8))), Team(1, "B", "blue", list(range(8, 16))), import_league(), declare_dict)
-
+A, B = Team(0, "A", "red", list(range(0, 8))), Team(1, "B", "blue", list(range(8, 16)))
+game(A, B, import_league(), declare_dict)
 # A season for checking out stuff:
 # season(TEAMS, COLORS, declare_dict)

@@ -52,7 +52,7 @@ def take_down(target_player: Player, shooter: Player, target_is_left: bool,
 def retreat(target_player: Player, shooter: Player, left_team: Team, shot_quality: float,
             game_table: DataFrame) -> bool:
 
-    blocks = determine_retreat(target_player.attributes["stability"], shot_quality)
+    blocks = determine_retreat(target_player.stability, shot_quality)
     target_is_left = bool(target_player in left_team.line_up)
     there_is_a_takedown = False
     if target_is_left and target_player.column <= blocks:
@@ -82,8 +82,8 @@ def face_off(shooter: Player, running_team: Team, left_team: Team,
     target_player = choose_target(shooter, eligible_players)
 
     # determine shot quality and evasion attempt
-    shot_quality = randint(1, shooter.attributes["shooting"]) // calculate_distance(shooter, target_player)
-    evasion_attempt = randint(1, target_player.attributes["agility"])
+    shot_quality = randint(1, shooter.shooting) // calculate_distance(shooter, target_player)
+    evasion_attempt = randint(1, target_player.agility)
 
     # evade or try to balance
     if shot_quality > evasion_attempt:

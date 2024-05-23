@@ -8,15 +8,28 @@ class Player:
     """A class representing a player during a game."""
 
     def __init__(self, player_id: int):
-        # TODO: maybe make every attribute its own attribute instead of using the dataframe
         """Initializing a player instance.
 
         :param player_id: an integer representing the player's ID in the players Dataframe.
         """
-        players = import_players()
-        self.attributes = players.loc[player_id]
+        data = import_players().loc[player_id]
+        # personal
         self.id = player_id
-        self.color = COLOR_DICT[players.loc[player_id, "Color"]]
+        self.name = data["Name"]
+
+        # team related
+        self.team = data["Team"]
+        self.color = COLOR_DICT[data["Color"]]
+
+        # attributes
+        self.speed = data["speed"]
+        self.agility = data["agility"]
+        self.creating = data["creating"]
+        self.shooting = data["shooting"]
+        self.stability = data["stability"]
+        self.stamina = data["stamina"]
+
+        # gameplay related
         self.on_field = False
         self.position = None
         self.has_disc = False
@@ -66,7 +79,7 @@ class Player:
         if self.delay:
             self.delay = False
             return 0
-        run_attempt = randint(1, self.attributes["speed"])
+        run_attempt = randint(1, self.speed)
         if run_attempt > 66:
             advance_blocks = 3
         elif run_attempt > 33:
@@ -98,7 +111,7 @@ class Player:
 
         :return: string of ANSI escape code (of the Team's color), player's name and ANSI escape code (of a color reset)
         """
-        return "".join([self.color, self.attributes["Name"], COLOR_RESET])
+        return "".join([self.color, self.name, COLOR_RESET])
 
     def present_player(self, stats_table: DataFrame, top_stat_list: list):
         keys_list = list(stats_table.keys())

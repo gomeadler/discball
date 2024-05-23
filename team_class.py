@@ -86,6 +86,9 @@ class Team:
         self.roster = temp
         self.update_line_up()
 
+    def update_default_line_up_to_current(self):
+        self.default_starting_roster_ids = self.id_list[:]
+
     def switch_places(self, first_player: Player, second_player: Player):
         first_index = self.id_list.index(first_player.id)
         second_index = self.id_list.index(second_player.id)
@@ -105,6 +108,7 @@ class Team:
 
     def trade_out_player(self, departing_player_id: int):
         self.id_list.remove(departing_player_id)
+        self.default_starting_roster_ids.remove(departing_player_id)
         for player in self.roster:
             if player.id == departing_player_id:
                 self.roster.remove(player)

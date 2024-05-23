@@ -84,15 +84,15 @@ def season(original_list_of_teams: list, original_list_of_colors: list, declare:
 
 
 declare_dict = {
-    "gameplay": False,
-    "game_summary": False,
+    "gameplay": True,
+    "game_summary": True,
     "round_summary": False,
     "season_top_team": True,
     "season_summary": True
 }
 
 # A game for checking out stuff:
-#  game("Team A", "Team B", create_league(), declare_dict)
+game(Team(0, "A", "red", list(range(0, 8))), Team(1, "B", "blue", list(range(8, 16))), import_league(), declare_dict)
 
 # A season for checking out stuff:
-season(TEAMS, COLORS, declare_dict)
+# season(TEAMS, COLORS, declare_dict)

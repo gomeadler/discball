@@ -1,10 +1,11 @@
 from random import choices
 from math import dist
 from pandas import DataFrame
-from data import create_empty_stats_dict, increase_stat_by
+from data import create_empty_stats_dict, increase_stat_by, update_league_table
 from constants import COLOR_DICT
 from player_class import Player
 from team_class import Team
+from constants import POINTS_FOR_WIN
 
 
 def choose_player_by_probabilities(options: list, probabilities: list) -> Player:
@@ -54,6 +55,7 @@ def prepare_match(left_team: Team, right_team: Team):
     left_team.is_left = True
     for team in [left_team, right_team]:
         team.reset_all_positions(False)
+        team.substitute_flag = True
 
     match_state_dict = {
         "left team": left_team.name,
@@ -69,3 +71,15 @@ def prepare_match(left_team: Team, right_team: Team):
     }
     print(f"{left_team.name} Vs {right_team.name}")
     return game_stats_table, match_state_dict
+
+
+def conclude_match(left_team: Team, right_team: Team, state_dict: dict, league_table: DataFrame):
+    left_team.is_left = False
+    for team in [left_team, right_team]:
+        team.substitute_flag = False
+        team.update_roster_and_line_up_to_default()
+
+    print(f"{left_team.name if state_dict['left score'] == POINTS_FOR_WIN else right_team.name} won! \n"
+          f"the final score was {state_dict['left score']} : {state_dict['right score']}")
+
+    update_league_table(left_team.name, right_team.name, state_dict, league_table)

@@ -13,8 +13,10 @@ class Team:
         self.id_list = list_of_player_indexes
         self.roster = [Player(i) for i in self.id_list]
         self.line_up = [self.roster[i] for i in range(NUM_OF_PLAYERS_IN_LINE_UP)]
+        self.default_starting_roster_ids = self.id_list
         self.bench_players = []
         self.is_left = False
+        self.substitute_flag = False
         self.update_line_up()
 
     def format_team_name(self):
@@ -71,6 +73,18 @@ class Team:
                 self.bench_players.append(player)
                 player.on_field = False
                 player.position = None
+
+    def update_roster_and_line_up_to_default(self):
+        # TODO: might not be the most efficient
+        temp = []
+        for searched_id in self.default_starting_roster_ids:
+            for i, player in enumerate(self.roster):
+                if player.id == searched_id:
+                    temp.append(player)
+                    self.roster = self.roster[:i] + self.roster[i+1:] + [player]
+                    break
+        self.roster = temp
+        self.update_line_up()
 
     def switch_places(self, first_player: Player, second_player: Player):
         first_index = self.id_list.index(first_player.id)

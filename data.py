@@ -4,6 +4,7 @@ from names import get_first_name
 from constants import *
 
 
+# TODO: maybe use matplotlib to show graphics of statistics?
 def find_team_by_name(team_name: str) -> int:
     for index, team in enumerate(TEAMS):
         if team == team_name:

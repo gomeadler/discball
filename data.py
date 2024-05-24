@@ -55,8 +55,6 @@ def import_league():
 
 def create_empty_stats_dict() -> DataFrame:
     total_num_of_players = NUM_OF_PLAYERS_IN_TEAM * NUM_OF_TEAMS
-
-    # TODO: can it be more efficient?
     stats_dict = {
         "ID": [i for i in range(total_num_of_players)],
         "distance_covered": [0 for _ in range(total_num_of_players)],
@@ -67,6 +65,8 @@ def create_empty_stats_dict() -> DataFrame:
         "evasions": [0 for _ in range(total_num_of_players)],
         "successful_shots": [0 for _ in range(total_num_of_players)],
         "successful_takedowns": [0 for _ in range(total_num_of_players)],
+        "last_ditch_hit": [0 for _ in range(total_num_of_players)],
+        "last_ditch_takedown": [0 for _ in range(total_num_of_players)],
         "carrier_takedowns": [0 for _ in range(total_num_of_players)],
         "hits_taken": [0 for _ in range(total_num_of_players)],
         "balance_losses": [0 for _ in range(total_num_of_players)],
@@ -77,8 +77,6 @@ def create_empty_stats_dict() -> DataFrame:
 
 def create_players(path) -> DataFrame:
     total_num_of_players = NUM_OF_PLAYERS_IN_TEAM * NUM_OF_TEAMS
-
-    # TODO: also here. improve efficiency?
     player_ability_dict = {
         "ID": [i for i in range(total_num_of_players)],
         "Name": [get_first_name("Male") for _ in range(total_num_of_players)],

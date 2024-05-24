@@ -12,18 +12,20 @@ from time import sleep
 
 
 def declare_state(left_team: Team, right_team: Team, match_state: dict, carrier: Player):
-    # TODO: maybe the formatting can be better
     system("cls")
-    len_left = len(left_team.name) // 2
-    len_right = len(right_team.name) // 2
-    print(f""
-          f"{left_team.name} Vs. {right_team.name} \n"
-          f"{' '*len_left}"
-          f"{''.join([left_team.color, str(match_state['left score']), COLOR_RESET])}"
-          f"{' '* len_left} : {' '*len_right}"
-          f"{''.join([right_team.color, str(match_state['right score']), COLOR_RESET])}"
-          f"{' '*len_right} \n"
+    left_placeholder = ' ' * (len(left_team.name) // 2)
+    right_placeholder = ' ' * (len(right_team.name) // 2)
+
+    print(f"{left_team.name} Vs. {right_team.name} \n"
+          f"{left_placeholder}{''.join([left_team.color, str(match_state['left score']), COLOR_RESET])}"
+          f"{left_placeholder} : {right_placeholder}"
+          f"{''.join([right_team.color, str(match_state['right score']), COLOR_RESET])}{right_placeholder} \n"
           f"set : {match_state['set']}, phase: {match_state['phase']}, turn: {match_state['turn']}")
+    #  example:
+    #       A Vs. B
+    #       0 : 0                       ## these are colored
+    #       set : 1, phase: 1, turn: 1
+
     print(f"{carrier.format_name()} currently holds the disc")
     create_field(left_team, right_team, match_state, (carrier.row, carrier.column))
     sleep(0.5)

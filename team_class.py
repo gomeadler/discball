@@ -75,7 +75,6 @@ class Team:
                 player.position = None
 
     def update_roster_and_line_up_to_default(self):
-        # TODO: might not be the most efficient
         temp = []
         for searched_id in self.default_starting_roster_ids:
             for i, player in enumerate(self.roster):

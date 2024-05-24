@@ -5,17 +5,24 @@ from data import increase_stat_by
 from general import choose_player_by_probabilities, calculate_distance
 from random import randint
 from time import sleep
+from typing import List
 
 
-def choose_target(shooter: Player, eligible_players: list) -> Player:
+def choose_target(shooter: Player, eligible_players: List[Player]) -> Player:
     probabilities = []
     for rival in eligible_players:
         distance = calculate_distance(shooter, rival)
+        rival_prob = 1
+        if rival.has_disc:
+            rival_prob *= 5
+        if rival.column in [10, 11]:
+            rival_prob *= 2
         try:
-            probabilities.append(5 / distance if rival.has_disc else 1 / distance)
+            probabilities.append(rival_prob / distance if rival.has_disc else rival_prob / distance)
         except ZeroDivisionError:
             print(f"{shooter.format_name()} tried to shoot {rival.format_name()} "
                   f"but the distance calculated was {distance}")
+            raise ZeroDivisionError
     return choose_player_by_probabilities(eligible_players, probabilities)
 
 
@@ -39,9 +46,11 @@ def take_down(target_player: Player, shooter: Player, target_is_left: bool,
     if target_player.has_disc:
         # meaning it was a carrier takedown and a drop
 
-        target_player.reset_position(target_is_left, True)
         increase_stat_by(game_table, target_player.id, "drops_made", 1)
         increase_stat_by(game_table, shooter.id, "carrier_takedowns", 1)
+        if target_player.column in [10, 11]:
+            increase_stat_by(game_table, shooter.id, "last_ditch_takedown", 1)
+        target_player.reset_position(target_is_left, True)
         return True
 
     else:
@@ -89,6 +98,8 @@ def face_off(shooter: Player, running_team: Team, left_team: Team,
     if shot_quality > evasion_attempt:
         increase_stat_by(game_table, shooter.id, "successful_shots", 1)
         increase_stat_by(game_table, target_player.id, "hits_taken", 1)
+        if target_player.has_disc and target_player.column in [10, 11]:
+            increase_stat_by(game_table, shooter.id, "last_ditch_hit", 1)
         if not silent:
             print(f"{shooter.format_name()} hit {target_player.format_name()}")
             sleep(1)

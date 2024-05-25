@@ -62,7 +62,7 @@ def assess_performance(player: Player, stats_table: DataFrame):
         offence_score += player_stats["carrier_evasions"] / 2
         offence_score -= player_stats["drops_made"] / 2
         if offence_score < 0:
-            offence_score = 0
+            offence_score = 0.0
         offence_score /= player_stats["sets_played"]
 
         # defence score
@@ -130,11 +130,12 @@ def conclude_match(left_team: Team, right_team: Team, state_dict: dict, league_t
         for player in team.roster:
             if game_table.loc[player.id, "sets_played"]:
                 offence_score, defence_score, rating = assess_performance(player, game_table)
-                game_table.loc[player.id, "offence_scores_list"].append(offence_score)
-                game_table.loc[player.id, "defence_scores_list"].append(defence_score)
+                if offence_score > 0:
+                    game_table.loc[player.id, "offence_scores_list"].append(offence_score)
+                if defence_score > 0:
+                    game_table.loc[player.id, "defence_scores_list"].append(defence_score)
                 game_table.loc[player.id, "rating_list"].append(rating)
-                update_averages(player.id, game_table)
-                print(game_table.loc[player.id, "rating_list"], game_table.loc[player.id, "average_rating"])
+                update_averages(player.id, game_table, False)
 
     print(f"{left_team.name if state_dict['left score'] == POINTS_FOR_WIN else right_team.name} won! \n"
           f"the final score was {state_dict['left score']} : {state_dict['right score']}")

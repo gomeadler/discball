@@ -121,10 +121,15 @@ def update_stats_table_from_another(source_table: DataFrame, receiving_table: Da
     return receiving_table + source_table
 
 
-def update_averages(player_id: int, stats_table: DataFrame):
-    stats_table.loc[player_id, "average_offence_score"] = Series(stats_table.loc[player_id, "offence_scores_list"]).mean()
-    stats_table.loc[player_id, "average_defence_score"] = Series(stats_table.loc[player_id, "defence_scores_list"]).mean()
-    stats_table.loc[player_id, "average_rating"] = Series(stats_table.loc[player_id, "rating_list"]).mean()
+def update_averages(player_id: int, stats_table: DataFrame, is_season: bool):
+    for score, score_list in zip(
+            ["average_offence_score", "average_defence_score", "average_rating"],
+            ["offence_scores_list", "defence_scores_list", "rating_list"]):
+        if len(stats_table.loc[player_id, score_list]) < 5 and is_season:
+            stats_table.loc[player_id, score] = -1
+        else:
+            stats_table.loc[player_id, score] = \
+                round(Series(stats_table.loc[player_id, score_list]).mean(), 2)
 
 
 def update_ratio(team_name: str, table: DataFrame):

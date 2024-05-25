@@ -1,6 +1,6 @@
 from constants import TEAMS, COLORS, NUM_OF_PLAYERS_IN_TEAM
 from game import game
-from data import show_league, import_league, create_empty_stats_dict, update_stats_table_from_another
+from data import show_league, import_league, create_empty_stats_dict, update_stats_table_from_another, update_averages
 from summarizing import print_top_performers, print_top_team
 from pandas import DataFrame
 from team_class import Team
@@ -77,22 +77,27 @@ def season(original_list_of_teams: list, original_list_of_colors: list, declare:
         season_stats = \
             update_stats_table_from_another(match_day(game_schedule[season_round], league, declare), season_stats)
         show_league(league)
+    for team in teams_list:
+        for player in team.roster:
+            update_averages(player.id, season_stats, True)
     if declare["season_top_team"]:
         print_top_team(teams_list, league, season_stats)
     if declare["season_summary"]:
         print_top_performers(season_stats)
+    season_stats.to_excel(r"C:\Users\gomea\PycharmProjects\disc_game_pandas\season_stats_excel.xlsx")
 
 
 declare_dict = {
-    "gameplay": True,
-    "game_summary": True,
+    "gameplay": False,
+    "game_summary": False,
     "round_summary": False,
-    "season_top_team": True,
+    "season_top_team": False,
     "season_summary": True
 }
 
 # A game for checking out stuff:
-A, B = Team(0, "A", "red", list(range(0, 8))), Team(1, "B", "blue", list(range(8, 16)))
-game(A, B, import_league(), declare_dict)
+# A, B = Team(0, "A", "red", list(range(0, 8))), Team(1, "B", "blue", list(range(8, 16)))
+# game(A, B, import_league(), declare_dict)
+
 # A season for checking out stuff:
-# season(TEAMS, COLORS, declare_dict)
+season(TEAMS, COLORS, declare_dict)

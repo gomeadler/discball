@@ -1,5 +1,5 @@
 import random
-
+from data import increase_stat_by
 from general import creating_competition, prepare_match, conclude_match
 from summarizing import print_top_performers
 from turn import turn
@@ -48,6 +48,8 @@ def game(left_team: Team, right_team: Team, league_table: DataFrame, declare: di
         state_dict["set"] += 1
         for team in [left_team, right_team]:
             team.reset_all_positions(False)
+            for player in team.line_up:
+                increase_stat_by(game_table, player.id, "sets_played", 1)
 
         # set loop
         phase(state_dict, left_team, right_team, game_table, silent)
@@ -56,7 +58,7 @@ def game(left_team: Team, right_team: Team, league_table: DataFrame, declare: di
         check_and_make_substitution(left_team, right_team, state_dict, silent)
 
     # match conclusion
-    conclude_match(left_team, right_team, state_dict, league_table)
+    conclude_match(left_team, right_team, state_dict, league_table, game_table)
     if declare["game_summary"]:
         print_top_performers(game_table)
 

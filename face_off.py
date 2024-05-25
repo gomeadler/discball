@@ -49,7 +49,7 @@ def take_down(target_player: Player, shooter: Player, target_is_left: bool,
         increase_stat_by(game_table, target_player.id, "drops_made", 1)
         increase_stat_by(game_table, shooter.id, "carrier_takedowns", 1)
         if target_player.column in [10, 11]:
-            increase_stat_by(game_table, shooter.id, "last_ditch_takedown", 1)
+            increase_stat_by(game_table, shooter.id, "last_ditch_takedowns", 1)
         target_player.reset_position(target_is_left, True)
         return True
 
@@ -99,7 +99,7 @@ def face_off(shooter: Player, running_team: Team, left_team: Team,
         increase_stat_by(game_table, shooter.id, "successful_shots", 1)
         increase_stat_by(game_table, target_player.id, "hits_taken", 1)
         if target_player.has_disc and target_player.column in [10, 11]:
-            increase_stat_by(game_table, shooter.id, "last_ditch_hit", 1)
+            increase_stat_by(game_table, shooter.id, "last_ditch_hits", 1)
         if not silent:
             print(f"{shooter.format_name()} hit {target_player.format_name()}")
             sleep(1)
@@ -108,4 +108,6 @@ def face_off(shooter: Player, running_team: Team, left_team: Team,
         return there_was_a_drop
     else:
         increase_stat_by(game_table, target_player.id, "evasions", 1)
+        if target_player.has_disc:
+            increase_stat_by(game_table, target_player.id, "carrier_evasions", 1)
         return False

@@ -1,4 +1,4 @@
-from pandas import DataFrame, read_excel
+from pandas import DataFrame, read_excel, Series
 from numpy import random, clip
 from names import get_first_name
 from constants import *
@@ -57,20 +57,28 @@ def create_empty_stats_dict() -> DataFrame:
     total_num_of_players = NUM_OF_PLAYERS_IN_TEAM * NUM_OF_TEAMS
     stats_dict = {
         "ID": [i for i in range(total_num_of_players)],
+        "sets_played": [0 for _ in range(total_num_of_players)],
+        "offence_scores_list": [[] for _ in range(total_num_of_players)],
+        "defence_scores_list": [[] for _ in range(total_num_of_players)],
+        "rating_list": [[] for _ in range(total_num_of_players)],
         "distance_covered": [0 for _ in range(total_num_of_players)],
         "distance_carried": [0 for _ in range(total_num_of_players)],
         "touchdowns": [0 for _ in range(total_num_of_players)],
         "turns_in_touchdown_strip": [0 for _ in range(total_num_of_players)],
         "creations": [0 for _ in range(total_num_of_players)],
         "evasions": [0 for _ in range(total_num_of_players)],
+        "carrier_evasions": [0 for _ in range(total_num_of_players)],
         "successful_shots": [0 for _ in range(total_num_of_players)],
         "successful_takedowns": [0 for _ in range(total_num_of_players)],
-        "last_ditch_hit": [0 for _ in range(total_num_of_players)],
-        "last_ditch_takedown": [0 for _ in range(total_num_of_players)],
+        "last_ditch_hits": [0 for _ in range(total_num_of_players)],
+        "last_ditch_takedowns": [0 for _ in range(total_num_of_players)],
         "carrier_takedowns": [0 for _ in range(total_num_of_players)],
         "hits_taken": [0 for _ in range(total_num_of_players)],
         "balance_losses": [0 for _ in range(total_num_of_players)],
-        "drops_made": [0 for _ in range(total_num_of_players)]
+        "drops_made": [0 for _ in range(total_num_of_players)],
+        "average_offence_score": [0 for _ in range(total_num_of_players)],
+        "average_defence_score": [0 for _ in range(total_num_of_players)],
+        "average_rating": [0 for _ in range(total_num_of_players)]
     }
     return DataFrame(stats_dict)
 
@@ -111,6 +119,12 @@ def increase_stat_by(table: DataFrame, player: int, stat: str, amount: int):
 def update_stats_table_from_another(source_table: DataFrame, receiving_table: DataFrame):
     source_table["ID"] = 0
     return receiving_table + source_table
+
+
+def update_averages(player_id: int, stats_table: DataFrame):
+    stats_table.loc[player_id, "average_offence_score"] = Series(stats_table.loc[player_id, "offence_scores_list"]).mean()
+    stats_table.loc[player_id, "average_defence_score"] = Series(stats_table.loc[player_id, "defence_scores_list"]).mean()
+    stats_table.loc[player_id, "average_rating"] = Series(stats_table.loc[player_id, "rating_list"]).mean()
 
 
 def update_ratio(team_name: str, table: DataFrame):
